@@ -1,0 +1,172 @@
+import { useState } from "react";
+import { View, Text, Pressable, StyleSheet, ScrollView, Linking, ActivityIndicator } from "react-native";
+import { C, radiusMd } from "../theme/colors";
+import { useAuth } from "../lib/AuthContext";
+import { useAlerts, useLatestLocation, useSafeZone, useOtherProfile } from "../hooks/useHouseholdData";
+import { supabase, supabaseReady } from "../lib/supabase";
+import OsmMap from "../components/OsmMap";
+import { Card, Tag, Button } from "../components/common";
+import ProfileScreen from "./ProfileScreen";
+
+const QUICK_MESSAGES = [
+  "Todo bien, gracias por avisar",
+  "Te llamo en 5 minutos",
+  "¿Tomaste la medicación?",
+];
+
+export default function CuidadorDashboard() {
+  const { profile } = useAuth();
+  const householdId = profile?.household_id;
+  const { alerts, sendAlert } = useAlerts(householdId);
+  const zone = useSafeZone(householdId);
+  const mama = useOtherProfile(householdId, "mama");
+  const mamaLocation = useLatestLocation(householdId, mama?.id);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const [aiText, setAiText] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  const lastSos = alerts.find((a) => a.type === "sos");
+
+  async function generateAiSummary() {
+    if (!supabaseReady) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const { data, error } = await supabase.functions.invoke("analyze-mama");
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setAiText(data.text);
+    } catch (e) {
+      setAiError(e.message ?? String(e));
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
+  if (showProfile) {
+    return <ProfileScreen onBack={() => setShowProfile(false)} mama={mama} />;
+  }
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.hello}>Hola</Text>
+          <Text style={styles.name}>{profile?.name ?? "Nacho"}</Text>
+        </View>
+        <Pressable onPress={() => setShowProfile(true)} style={styles.avatar}>
+          <Text style={{ color: C.accent }}>{(profile?.name ?? "N")[0]}</Text>
+        </Pressable>
+      </View>
+
+      {lastSos && (
+        <View style={styles.sosBanner}>
+          <View>
+            <Text style={styles.sosTitle}>Emergencia activada</Text>
+            <Text style={styles.sosSubtitle}>Pidió ayuda hace un momento</Text>
+          </View>
+        </View>
+      )}
+
+      <OsmMap
+        lat={mamaLocation?.lat ?? zone?.lat}
+        lng={mamaLocation?.lng ?? zone?.lng}
+        safeRadius={zone?.radius_m ?? 150}
+      />
+
+      <Card style={{ gap: 10 }}>
+        <Text style={styles.aiLabel}>Análisis de IA</Text>
+        {aiText ? (
+          <Text style={styles.aiBody}>{aiText}</Text>
+        ) : (
+          <Text style={styles.aiBody}>
+            Tocá "Generar" para que Claude arme un resumen de las últimas 24 horas
+            con los datos reales de mamá (ubicación, check-ins, alertas).
+          </Text>
+        )}
+        {aiError !== "" && <Text style={styles.aiError}>{aiError}</Text>}
+        <Button variant="secondary" onPress={generateAiSummary} disabled={aiLoading}>
+          {aiLoading ? <ActivityIndicator color={C.text} /> : aiText ? "Actualizar" : "Generar"}
+        </Button>
+      </Card>
+
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <Button variant="secondary" style={{ flex: 1 }} onPress={() => setChatOpen(true)}>
+          Mensaje rápido
+        </Button>
+        <Button
+          variant="primary"
+          style={{ flex: 1 }}
+          onPress={() => mama?.phone && Linking.openURL(`tel:${mama.phone}`)}
+        >
+          Llamar
+        </Button>
+      </View>
+
+      <View>
+        <Text style={styles.sectionTitle}>Actividad reciente</Text>
+        <View style={{ gap: 8 }}>
+          {alerts.map((a) => (
+            <Card key={a.id} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 10 }}>
+              <Tag variant={a.type === "sos" ? "outline" : "neutral"}>
+                {new Date(a.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+              </Tag>
+              <Text style={{ color: C.text, fontSize: 13, flex: 1 }}>{a.text}</Text>
+            </Card>
+          ))}
+          {alerts.length === 0 && (
+            <Text style={{ color: C.text, opacity: 0.5, fontSize: 13 }}>Todavía no hay actividad.</Text>
+          )}
+        </View>
+      </View>
+
+      {chatOpen && (
+        <View style={styles.dialogOverlay}>
+          <View style={styles.dialogCard}>
+            <Text style={styles.dialogTitle}>Mensaje rápido</Text>
+            <Text style={styles.dialogBody}>Se envía como notificación simple a su teléfono.</Text>
+            <View style={{ gap: 8 }}>
+              {QUICK_MESSAGES.map((m) => (
+                <Button
+                  key={m}
+                  variant="secondary"
+                  onPress={() => {
+                    sendAlert({ userId: profile?.id, type: "message", text: m });
+                    setChatOpen(false);
+                  }}
+                >
+                  {m}
+                </Button>
+              ))}
+            </View>
+            <Pressable onPress={() => setChatOpen(false)} style={{ alignSelf: "flex-end" }}>
+              <Text style={{ color: C.accent }}>Cerrar</Text>
+            </Pressable>
+          </View>
+        </View>
+      )}
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flexGrow: 1, backgroundColor: C.bg, padding: 16, gap: 14 },
+  header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
+  hello: { fontSize: 12, color: C.text, opacity: 0.6 },
+  name: { fontSize: 20, fontWeight: "500", color: C.text },
+  avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: C.neutral800, borderWidth: 1, borderColor: C.divider, alignItems: "center", justifyContent: "center" },
+  sosBanner: { borderWidth: 1, borderColor: C.danger, borderRadius: radiusMd, backgroundColor: "rgba(224,113,107,0.14)", padding: 12 },
+  sosTitle: { color: C.dangerText, fontWeight: "500", fontSize: 13 },
+  sosSubtitle: { color: C.text, opacity: 0.7, fontSize: 11 },
+  aiLabel: { color: C.accent, fontSize: 10, letterSpacing: 1, textTransform: "uppercase" },
+  aiTitle: { color: C.text, fontSize: 15, fontWeight: "500" },
+  aiBody: { color: C.text, opacity: 0.85, fontSize: 13 },
+  aiError: { color: C.dangerText, fontSize: 12 },
+  sectionTitle: { color: C.text, opacity: 0.7, fontSize: 13, marginBottom: 8 },
+  dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
+  dialogCard: { width: "100%", maxWidth: 440, backgroundColor: C.surface, borderRadius: 14, padding: 20, gap: 12 },
+  dialogTitle: { fontSize: 20, fontWeight: "500", color: C.text },
+  dialogBody: { fontSize: 14, color: C.text, opacity: 0.85 },
+});

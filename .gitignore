@@ -1,0 +1,47 @@
+# dependencies
+node_modules/
+
+# Expo
+app/.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# env (secretos reales — nunca al repo)
+.env
+.env*.local
+app/.env
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+app/ios
+app/android
+
+# capturas de pantalla sueltas (no son parte del proyecto)
+Captura de pantalla*.png
+
+# cache del Supabase CLI
+supabase/.temp/

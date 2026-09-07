@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "MamaCheck",
+    "slug": "mamacheck",
+    "scheme": "mamacheck",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mamacheck.app",
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"],
+        "NSLocationWhenInUseUsageDescription": "MamaCheck usa tu ubicación para que tu familia sepa que estás bien.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "MamaCheck comparte tu ubicación en segundo plano con tu familia."
+      }
+    },
+    "android": {
+      "package": "com.mamacheck.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#161826",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-web-browser",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "MamaCheck comparte tu ubicación en segundo plano con tu familia.",
+          "isAndroidBackgroundLocationEnabled": true,
+          "isAndroidForegroundServiceEnabled": true
+        }
+      ]
+    ]
+  }
+}

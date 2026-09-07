@@ -1,0 +1,39 @@
+import "./src/lib/locationTask";
+import { StatusBar } from "expo-status-bar";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { AuthProvider, useAuth } from "./src/lib/AuthContext";
+import { C } from "./src/theme/colors";
+import LoginGate from "./src/screens/LoginGate";
+import MamaHome from "./src/screens/MamaHome";
+import CuidadorDashboard from "./src/screens/CuidadorDashboard";
+
+function Root() {
+  const { session, profile, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.splash}>
+        <ActivityIndicator color={C.accent} />
+      </View>
+    );
+  }
+
+  if (!session || !profile?.role) return <LoginGate />;
+  if (profile.role === "mama") return <MamaHome />;
+  return <CuidadorDashboard />;
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <View style={{ flex: 1, backgroundColor: C.bg }}>
+        <Root />
+        <StatusBar style="light" />
+      </View>
+    </AuthProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  splash: { flex: 1, backgroundColor: C.bg, alignItems: "center", justifyContent: "center" },
+});

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "mamacheck-web",
+      "runtimeExecutable": "C:\\AI Cosas 26\\Cuidado Mama\\run-web.bat",
+      "runtimeArgs": [],
+      "port": 8090
+    }
+  ]
+}
