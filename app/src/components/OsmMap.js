@@ -17,9 +17,9 @@ const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
   var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${zoneLat}, ${zoneLng}], 16);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap'
+    attribution: '&copy; OpenStreetMap &copy; CARTO'
   }).addTo(map);
 
   // Círculo de zona segura: alrededor de la zona (ej. su casa), no de mamá —
