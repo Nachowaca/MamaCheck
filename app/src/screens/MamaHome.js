@@ -43,9 +43,14 @@ export default function MamaHome() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.greeting}>
-        {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]}
-      </Text>
+      <View style={styles.header}>
+        <Text style={styles.greeting}>
+          {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]}
+        </Text>
+        <Pressable onPress={signOut} style={styles.exitBtn} hitSlop={8}>
+          <Text style={styles.exitBtnText}>Salir</Text>
+        </Pressable>
+      </View>
 
       <Pressable onPress={checkIn} style={styles.checkinBtn}>
         <View style={styles.check} />
@@ -64,9 +69,6 @@ export default function MamaHome() {
       </Pressable>
 
       <Text style={styles.footer}>Tu familia puede ver que estás bien</Text>
-      <Pressable onPress={signOut}>
-        <Text style={styles.signOut}>Salir</Text>
-      </Pressable>
 
       {sosOpen && (
         <Dialog>
@@ -125,7 +127,10 @@ function Dialog({ children }) {
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, backgroundColor: C.bg, alignItems: "center", padding: 24, gap: 22 },
-  greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center", marginTop: 12 },
+  header: { width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 12 },
+  greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center", flex: 1 },
+  exitBtn: { position: "absolute", right: 0, paddingVertical: 4, paddingHorizontal: 8 },
+  exitBtnText: { fontSize: 13, color: C.accent, opacity: 0.7 },
   checkinBtn: {
     width: 220, height: 220, borderRadius: 110,
     borderWidth: 2, borderColor: C.accent,
@@ -147,7 +152,6 @@ const styles = StyleSheet.create({
   sosBtn: { width: "100%", height: 52, borderRadius: radiusMd, borderWidth: 1, borderColor: C.danger, alignItems: "center", justifyContent: "center" },
   sosText: { color: C.dangerText, fontWeight: "500", fontSize: 18 },
   footer: { fontSize: 14, color: C.text, opacity: 0.55, textAlign: "center" },
-  signOut: { fontSize: 13, color: C.accent, opacity: 0.5 },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 380, backgroundColor: C.surface, borderRadius: radiusLg, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.text },

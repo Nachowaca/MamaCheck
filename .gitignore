@@ -50,3 +50,7 @@ supabase/.temp/
 .claude/scheduled_tasks.lock
 Captura de pantalla*.png
 WhatsApp Image*.jpeg
+
+# builds de Android descargados (quedan en expo.dev, no hace falta versionarlos)
+Android Builds/
+*.apk

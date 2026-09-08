@@ -15,7 +15,7 @@ const QUICK_MESSAGES = [
 ];
 
 export default function CuidadorDashboard() {
-  const { profile } = useAuth();
+  const { profile, signOut } = useAuth();
   const householdId = profile?.household_id;
   const { alerts, sendAlert } = useAlerts(householdId);
   const zone = useSafeZone(householdId);
@@ -56,9 +56,14 @@ export default function CuidadorDashboard() {
           <Text style={styles.hello}>Hola</Text>
           <Text style={styles.name}>{profile?.name ?? "Nacho"}</Text>
         </View>
-        <Pressable onPress={() => setShowProfile(true)} style={styles.avatar}>
-          <Text style={{ color: C.accent }}>{(profile?.name ?? "N")[0]}</Text>
-        </Pressable>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
+          <Pressable onPress={signOut} hitSlop={8}>
+            <Text style={styles.exitBtnText}>Salir</Text>
+          </Pressable>
+          <Pressable onPress={() => setShowProfile(true)} style={styles.avatar}>
+            <Text style={{ color: C.accent }}>{(profile?.name ?? "N")[0]}</Text>
+          </Pressable>
+        </View>
       </View>
 
       {lastSos && (
@@ -159,6 +164,7 @@ const styles = StyleSheet.create({
   hello: { fontSize: 12, color: C.text, opacity: 0.6 },
   name: { fontSize: 20, fontWeight: "500", color: C.text },
   avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: C.neutral800, borderWidth: 1, borderColor: C.divider, alignItems: "center", justifyContent: "center" },
+  exitBtnText: { fontSize: 13, color: C.accent, opacity: 0.7 },
   sosBanner: { borderWidth: 1, borderColor: C.danger, borderRadius: radiusMd, backgroundColor: "rgba(224,113,107,0.14)", padding: 12 },
   sosTitle: { color: C.dangerText, fontWeight: "500", fontSize: 13 },
   sosSubtitle: { color: C.text, opacity: 0.7, fontSize: 11 },
