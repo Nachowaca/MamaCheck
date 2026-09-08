@@ -46,9 +46,9 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
   }
 
   var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${lat}, ${lng}], 16);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
   // Un círculo por cada zona segura (casa de mamá, casa de un familiar,
