@@ -1,7 +1,7 @@
 import { View, Platform } from "react-native";
 import { C } from "../theme/colors";
 
-const HTML = (lat, lng, zones, accent) => `
+const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
 <!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -18,6 +18,33 @@ const HTML = (lat, lng, zones, accent) => `
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
   var zones = ${JSON.stringify(zones)};
+  var SAFE = '${safeColor}';
+  var DANGER = '${dangerColor}';
+
+  // Fórmula haversine, igual a la que usa el chequeo real del lado del
+  // servidor (locationTask.js) — así el color del punto en el mapa
+  // coincide con si mamá está realmente "dentro" de alguna zona o no.
+  function distanceMeters(lat1, lng1, lat2, lng2) {
+    var R = 6371000;
+    var toRad = function (d) { return (d * Math.PI) / 180; };
+    var dLat = toRad(lat2 - lat1);
+    var dLng = toRad(lng2 - lng1);
+    var a = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+  function isInsideAnyZone(lat, lng) {
+    if (!zones.length) return true;
+    return zones.some(function (z) { return distanceMeters(lat, lng, z.lat, z.lng) <= z.radius_m; });
+  }
+  function makeDotIcon(color) {
+    return L.divIcon({
+      className: '',
+      html: '<div style="width:22px;height:22px;border-radius:50%;background:' + color + '40;display:flex;align-items:center;justify-content:center"><div style="width:14px;height:14px;border-radius:50%;background:' + color + ';border:2.5px solid #f3f5fe"></div></div>',
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+    });
+  }
+
   var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${lat}, ${lng}], 16);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
@@ -33,13 +60,7 @@ const HTML = (lat, lng, zones, accent) => `
       .addTo(map);
   });
 
-  var dotIcon = L.divIcon({
-    className: '',
-    html: '<div style="width:22px;height:22px;border-radius:50%;background:${accent}40;display:flex;align-items:center;justify-content:center"><div style="width:14px;height:14px;border-radius:50%;background:${accent};border:2.5px solid #f3f5fe"></div></div>',
-    iconSize: [22, 22],
-    iconAnchor: [11, 11],
-  });
-  var marker = L.marker([${lat}, ${lng}], { icon: dotIcon }).addTo(map);
+  var marker = L.marker([${lat}, ${lng}], { icon: makeDotIcon(isInsideAnyZone(${lat}, ${lng}) ? SAFE : DANGER) }).addTo(map);
 
   var bounds = L.featureGroup(zoneCircles.concat([marker])).getBounds();
   if (bounds.isValid()) {
@@ -55,6 +76,7 @@ const HTML = (lat, lng, zones, accent) => `
       var data = JSON.parse(e.data);
       if (data.lat && data.lng) {
         marker.setLatLng([data.lat, data.lng]);
+        marker.setIcon(makeDotIcon(isInsideAnyZone(data.lat, data.lng) ? SAFE : DANGER));
         var newBounds = L.featureGroup(zoneCircles.concat([marker])).getBounds();
         map.fitBounds(newBounds, { padding: [36, 36], maxZoom: 16 });
       }
@@ -73,7 +95,7 @@ export default function OsmMap({ lat, lng, zones = [], height = 220 }) {
   if (lat == null || lng == null) {
     return <View style={{ height, backgroundColor: "#1b2334" }} />;
   }
-  const html = HTML(lat, lng, zones, C.accent);
+  const html = HTML(lat, lng, zones, C.accent, "#4caf82", C.danger);
 
   if (Platform.OS === "web") {
     return (
