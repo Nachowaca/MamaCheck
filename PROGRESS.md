@@ -89,6 +89,18 @@ diseño/producto, no lo pises.
   "lisboaser", el prefijo del mail, en vez de "Nacho" / "Laura").
 - Proyecto EAS creado (`nacowakas-team` / projectId ya en `app/app.json`) —
   primer paso para el dev build.
+- **Dev build (APK) generado y probado en el celu real (2026-09-07/08)** —
+  ya no depende de Expo Go. Ubicación real confirmada en el mapa de Nacho.
+- Botón "Salir" rediseñado (2026-09-08): antes era un texto chico perdido
+  abajo de todo en la home de mamá — ahora es un botón tipo pill con ícono
+  (`app/src/components/ExitButton.js`), visible arriba en las dos pantallas.
+
+**Próximo: pasada de diseño visual (pedido 2026-09-08).** Nacho quiere
+probar algo menos "todo oscuro" — el mono-violeta sobre `#161826` está
+cerrado como identidad, pero conviene explorar variantes antes de tocar
+código (fondo menos negro, más superficies claras, etc.). Cuando se
+retome: confirmar paleta con Nacho antes de maquetar nada (ver
+`nacho-fijo`/`equilibrium-chat`), no asumir.
 
 **Para qué es el mapa (confirmado con Nacho, 2026-09-06):** el objetivo no es
 solo "ver un punto" — es que Nacho sepa que mamá está bien, y en particular

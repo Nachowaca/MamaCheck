@@ -4,6 +4,7 @@ import { C, radiusLg, radiusMd } from "../theme/colors";
 import { useAuth } from "../lib/AuthContext";
 import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
+import ExitButton from "../components/ExitButton";
 
 function greeting() {
   const h = new Date().getHours();
@@ -44,13 +45,11 @@ export default function MamaHome() {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>
-          {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]}
-        </Text>
-        <Pressable onPress={signOut} style={styles.exitBtn} hitSlop={8}>
-          <Text style={styles.exitBtnText}>Salir</Text>
-        </Pressable>
+        <ExitButton onPress={signOut} />
       </View>
+      <Text style={styles.greeting}>
+        {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]}
+      </Text>
 
       <Pressable onPress={checkIn} style={styles.checkinBtn}>
         <View style={styles.check} />
@@ -127,10 +126,8 @@ function Dialog({ children }) {
 
 const styles = StyleSheet.create({
   container: { flexGrow: 1, backgroundColor: C.bg, alignItems: "center", padding: 24, gap: 22 },
-  header: { width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "center", marginTop: 12 },
-  greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center", flex: 1 },
-  exitBtn: { position: "absolute", right: 0, paddingVertical: 4, paddingHorizontal: 8 },
-  exitBtnText: { fontSize: 13, color: C.accent, opacity: 0.7 },
+  header: { width: "100%", flexDirection: "row", justifyContent: "flex-end" },
+  greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center" },
   checkinBtn: {
     width: 220, height: 220, borderRadius: 110,
     borderWidth: 2, borderColor: C.accent,
