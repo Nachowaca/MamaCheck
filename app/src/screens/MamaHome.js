@@ -5,6 +5,7 @@ import { useAuth } from "../lib/AuthContext";
 import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
 import ExitButton from "../components/ExitButton";
+import { Button } from "../components/common";
 
 function greeting() {
   const h = new Date().getHours();
@@ -63,9 +64,9 @@ export default function MamaHome() {
         ))}
       </View>
 
-      <Pressable style={styles.sosBtn} onPress={() => setSosOpen(true)}>
-        <Text style={styles.sosText}>Necesito ayuda</Text>
-      </Pressable>
+      <Button variant="ghostDanger" onDark style={styles.sosBtn} onPress={() => setSosOpen(true)}>
+        Necesito ayuda
+      </Button>
 
       <Text style={styles.footer}>Tu familia puede ver que estás bien</Text>
 
@@ -74,12 +75,12 @@ export default function MamaHome() {
           <Text style={styles.dialogTitle}>¿Pedir ayuda?</Text>
           <Text style={styles.dialogBody}>Le avisamos a tu familia ahora mismo con tu ubicación.</Text>
           <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8 }}>
-            <Pressable style={styles.dialogBtnSecondary} onPress={() => setSosOpen(false)}>
-              <Text style={styles.dialogBtnSecondaryText}>Cancelar</Text>
-            </Pressable>
-            <Pressable style={styles.dialogBtnDanger} onPress={sendSos}>
-              <Text style={styles.dialogBtnDangerText}>Sí, avisar</Text>
-            </Pressable>
+            <Button variant="secondary" style={styles.dialogBtn} onPress={() => setSosOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="ghostDanger" style={styles.dialogBtn} onPress={sendSos}>
+              Sí, avisar
+            </Button>
           </View>
         </Dialog>
       )}
@@ -89,9 +90,9 @@ export default function MamaHome() {
             <View style={styles.sosDoneIcon} />
             <Text style={styles.dialogTitle}>Le avisamos a tu familia</Text>
             <Text style={styles.dialogBody}>Ya lo saben.</Text>
-            <Pressable style={styles.dialogBtnSecondary} onPress={() => setSosSent(false)}>
-              <Text style={styles.dialogBtnSecondaryText}>Cerrar</Text>
-            </Pressable>
+            <Button variant="secondary" onPress={() => setSosSent(false)}>
+              Cerrar
+            </Button>
           </View>
         </Dialog>
       )}
@@ -130,8 +131,13 @@ const styles = StyleSheet.create({
   greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center" },
   checkinBtn: {
     width: 220, height: 220, borderRadius: 110,
-    borderWidth: 2, borderColor: C.accent,
+    borderWidth: 1.5, borderColor: C.accent,
     alignItems: "center", justifyContent: "center", gap: 10,
+    shadowColor: C.accent,
+    shadowOpacity: 0.6,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 8,
   },
   check: { width: 34, height: 18, borderLeftWidth: 3, borderBottomWidth: 3, borderColor: C.accent, transform: [{ rotate: "-45deg" }], marginBottom: 4 },
   checkinText: { color: C.accent, fontWeight: "500", fontSize: 22 },
@@ -146,16 +152,12 @@ const styles = StyleSheet.create({
   contactNote: { fontSize: 14, color: C.textCardMuted },
   callBtn: { width: 36, height: 36, borderRadius: radiusMd, borderWidth: 1, borderColor: C.cardDivider, alignItems: "center", justifyContent: "center" },
   callIcon: { width: 16, height: 16, borderRadius: 8, borderWidth: 1.6, borderColor: C.textCard },
-  sosBtn: { width: "100%", height: 52, borderRadius: radiusMd, borderWidth: 1, borderColor: C.danger, alignItems: "center", justifyContent: "center" },
-  sosText: { color: C.dangerText, fontWeight: "500", fontSize: 18 },
+  sosBtn: { width: "100%", height: 52 },
   footer: { fontSize: 14, color: C.text, opacity: 0.55, textAlign: "center" },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 380, backgroundColor: C.surface, borderRadius: radiusLg, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
   dialogBody: { fontSize: 16, color: C.textCardMuted },
-  dialogBtnSecondary: { borderWidth: 1, borderColor: C.cardDivider, borderRadius: radiusMd, paddingHorizontal: 12, height: 40, alignItems: "center", justifyContent: "center" },
-  dialogBtnSecondaryText: { color: C.textCard, fontWeight: "500" },
-  dialogBtnDanger: { borderWidth: 1, borderColor: C.danger, borderRadius: radiusMd, paddingHorizontal: 12, height: 40, alignItems: "center", justifyContent: "center" },
-  dialogBtnDangerText: { color: C.dangerTextOnLight, fontWeight: "500" },
+  dialogBtn: { height: 40, paddingHorizontal: 16 },
   sosDoneIcon: { width: 52, height: 52, borderRadius: 26, borderWidth: 1.5, borderColor: C.danger },
 });

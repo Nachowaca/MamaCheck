@@ -4,6 +4,7 @@ import { C, radiusLg, radiusMd } from "../theme/colors";
 import { useAuth } from "../lib/AuthContext";
 import { supabaseReady, googleAuthEnabled } from "../lib/supabase";
 import { NachoAvatar, MamaAvatar } from "../components/Avatars";
+import { Button } from "../components/common";
 
 // Cuenta fija de mamá: ella solo toca "Soy mamá" y entra, sin escribir nada.
 // La contraseña vive en app/.env — no es un secreto real (queda en el
@@ -140,16 +141,16 @@ export default function LoginGate() {
               onChangeText={setPassword}
               editable={!busy}
             />
-            <Pressable style={styles.primaryBtn} disabled={busy} onPress={() => handlePassword(role)}>
-              {busy ? <ActivityIndicator color={C.accent} /> : <Text style={styles.primaryBtnText}>Entrar</Text>}
-            </Pressable>
+            <Button variant="primary" style={styles.fullBtn} disabled={busy} onPress={() => handlePassword(role)}>
+              {busy ? <ActivityIndicator color={C.accentText} /> : "Entrar"}
+            </Button>
             {error !== "" && <Text style={styles.error}>{error}</Text>}
             <Text style={styles.hint}>Si es la primera vez, se crea la cuenta sola.</Text>
 
             {googleAuthEnabled && (
-              <Pressable style={styles.googleBtn} disabled={busy} onPress={() => handleGoogle(role)}>
-                <Text style={styles.googleBtnText}>Continuar con Google</Text>
-              </Pressable>
+              <Button variant="secondary" style={styles.fullBtn} disabled={busy} onPress={() => handleGoogle(role)}>
+                Continuar con Google
+              </Button>
             )}
 
             <Pressable onPress={() => { setError(""); setRole(null); }} disabled={busy}>
@@ -234,28 +235,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 10,
   },
-  primaryBtn: {
-    width: "100%",
-    height: 44,
-    borderRadius: radiusMd,
-    borderWidth: 1,
-    borderColor: C.accent,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 14,
-  },
-  primaryBtnText: { color: C.accentText, fontWeight: "500", fontSize: 14 },
+  fullBtn: { width: "100%", marginTop: 10 },
   hint: { fontSize: 11, color: C.textCardMuted, marginTop: 8, textAlign: "center" },
-  googleBtn: {
-    width: "100%",
-    height: 44,
-    borderRadius: radiusMd,
-    borderWidth: 1,
-    borderColor: C.cardDivider,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  googleBtnText: { color: C.textCard, fontWeight: "500", fontSize: 14 },
   back: { color: C.accentText, fontSize: 12, opacity: 0.8, marginTop: 14 },
 });
