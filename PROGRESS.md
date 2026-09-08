@@ -80,6 +80,32 @@ Alert temporal sacado (`d97ff9c`).
 de mamá + probar SOS de punta a punta desde su lado) — no bloqueante, es
 la próxima vez que Nacho tenga su celular a mano.
 
+## ✅ Sesión 2026-09-08 (noche) — build standalone + tiles + limpieza de zonas
+
+- **Build "preview" (standalone)**: se armó un APK que no necesita Metro
+  corriendo (`eas.json` → perfil `preview`, distinto del `development`
+  que usábamos hasta ahora). Historia completa y gotcha de env vars en
+  `INSTALADOR.md` — resumen: los builds en la nube de EAS no ven
+  `app/.env` (gitignored), hubo que subir todas las `EXPO_PUBLIC_*` como
+  EAS environment variables para `preview` y `development`.
+- **Mapa: CartoDB → OpenStreetMap estándar**. CartoDB mostraba un
+  watermark "API_KEY_REQUIRED" — están retirando los tiles PNG gratuitos
+  del todo (con o sin key; su reemplazo es MapLibre GL vectorial, cambio
+  mucho más grande). Se volvió a tiles OSM estándar en `OsmMap.js`, sin
+  key, gratis siempre. Se pierde el estilo "clarito" — si en algún
+  momento importa mucho la estética, evaluar migrar a MapLibre GL.
+- **Zonas duplicadas limpiadas**: el SQL de alta de zonas se había
+  corrido más de una vez sin querer, dejando varias filas repetidas
+  (algunas todavía con el nombre viejo "Casa de Andrea"). Se corrió un
+  SQL de limpieza (borra por nombre viejo + dedup por nombre+lat+lng) y
+  quedaron las 3 zonas correctas: **Casa**, **Andrea**, **Casa de
+  Nacho**. Confirmado visualmente en el mapa, sin duplicados.
+- Link vigente del build standalone en `APK_ACTUAL.md` (se regeneró
+  después del fix de tiles).
+
+**Pendiente sigue siendo lo mismo de siempre**: instalar en el celu de
+mamá + probar SOS de punta a punta — ver `PLAN_OFICIAL.md` sección 1.
+
 Historia completa de la vuelta anterior de debugging (ya resuelta, dejar
 para contexto):
 
