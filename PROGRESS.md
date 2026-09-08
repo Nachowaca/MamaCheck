@@ -36,34 +36,59 @@ Pregunta clave resuelta: ¿cómo se obtiene la ubicación real de mamá?
 
 ## 🔴 Ahora mismo (2026-09-08, retomar por acá)
 
-**En el medio del setup de push notifications reales.** Estado exacto:
-- Firebase creado (proyecto "MamaCheck", package `com.mamacheck.app`),
-  `google-services.json` descargado y puesto en `app/google-services.json`
-  (gitignored — no está en el repo, solo en esta compu).
-- Cuenta de servicio de Firebase (`*firebase-adminsdk*.json`, en
-  `app/`, también gitignored) ya subida a EAS vía
-  `eas credentials` → Android → Push Notifications → "Upload an FCM API Key".
-  Esto ya quedó hecho, no hay que repetirlo.
-- `app.json` → convertido a `app.config.js` porque EAS Build solo sube
-  archivos versionados en git, y `google-services.json` no lo está (a
-  propósito). `app.config.js` lee `process.env.GOOGLE_SERVICES_JSON`
-  (variable de entorno de tipo archivo, ya creada en EAS con
-  `eas env:create` → apunta al `google-services.json` real) y cae al
-  archivo local si esa env var no existe.
-- **Build de EAS corriendo/recién terminado** con todo esto — cuando
-  vuelvas a esta conversación, lo primero es chequear
-  `eas build:list --limit 1` (o pedirle a Nacho la captura) y, si terminó,
-  pasarle el link del APK para instalar y probar push de verdad (SOS con
-  la app de mamá cerrada del todo → ¿le llega notificación real a Nacho?).
-- Si el push todavía no llega después de este build: revisar que
-  `push_token` en `profiles` dejó de ser `null` (`select push_token from
-  profiles`) — si sigue null, el problema es que el celu no consigue el
-  token (revisar permisos/logs), no el envío.
+**En el medio del setup de push notifications reales — muy cerca de cerrarlo.**
+Historia completa de esta vuelta (para no repetir pasos ya hechos):
+
+1. Firebase creado (proyecto "MamaCheck", package `com.mamacheck.app`),
+   `google-services.json` descargado a `app/google-services.json`
+   (gitignored — no está en el repo, solo en esta compu, Nacho lo tiene).
+2. Cuenta de servicio de Firebase (`app/*firebase-adminsdk*.json`, también
+   gitignored) subida a EAS vía `eas credentials` → Android → Push
+   Notifications → "Upload an FCM API Key". **Ya hecho, no repetir.**
+3. `app.json` → convertido a `app.config.js` (ya en el repo) porque EAS
+   Build solo sube archivos versionados en git, y `google-services.json`
+   no lo está a propósito. `app.config.js` lee
+   `process.env.GOOGLE_SERVICES_JSON` y cae al archivo local si no existe.
+4. Esa env var (`GOOGLE_SERVICES_JSON`, tipo file, visibilidad sensitive,
+   environment "development") ya está creada en EAS — confirmado con
+   `eas env:list` (sale `GOOGLE_SERVICES_JSON=***** (sensitive)`).
+   **Ya hecho, no repetir.**
+5. Primer build después de la conversión de app.config.js salió con
+   `push_token` igual `null` y sin tirar error — se agregó un debug
+   temporal (`app/App.js` + `app/src/lib/pushNotifications.js`, buscar
+   comentarios "TEMPORAL") que muestra un Alert con el resultado exacto de
+   `registerForPushToken()`. Con eso se vio `"OK: undefined"` — o sea, el
+   guardado corrió pero `getExpoPushTokenAsync` devolvió `data: undefined`,
+   consistente con que ESE build específico se había generado con código
+   viejo (antes de que `app.config.js` estuviera commiteado — commit hash
+   del build no coincidía con el HEAD real; parece un problema de timing,
+   no repetible si se espera a que el build arranque después del push).
+6. Se relanzó el build; EAS avisó "No environment variables ... found for
+   the development environment" — pero `eas env:list` mostró que SÍ
+   existe. Probablemente un problema de indexado/caché del lado de EAS,
+   no de nuestra config. Nacho canceló ese build y lanzó uno nuevo.
+
+**Al retomar:** chequear `eas build:list --limit 1 --json` (o pedirle a
+Nacho) si ese último build terminó. Si terminó:
+- Que instale el APK nuevo, abra la app, entre con un rol.
+- Va a aparecer un **Alert de debug** ("Debug: push token: ...") — leer qué
+  dice. Si dice `OK: ExponentPushToken[...]` (con un valor real, no
+  `undefined`), el token se guardó bien → confirmar con
+  `select push_token from profiles` que ya no es null → probar un SOS con
+  la app de mamá cerrada del todo y ver si llega la notificación real.
+- Si sigue diciendo `OK: undefined` o algún otro mensaje, ese texto exacto
+  dice dónde se corta (revisar `registerForPushToken` en
+  `app/src/lib/pushNotifications.js`, cada `return "..."` es un punto de
+  fallo distinto).
+- **Una vez que push funcione de punta a punta**: sacar el código de debug
+  temporal (buscar "TEMPORAL" en `App.js` y `pushNotifications.js`) y
+  commitear la limpieza.
 
 **Si Nacho reinstala en una compu nueva**: necesita recrear a mano (no
-están en git): `app/.env`, `app/google-services.json`, y la cuenta de
-servicio de Firebase no hace falta recrearla en el celu — pero si alguna
-vez hay que rehacer el build de EAS, esos archivos vuelven a hacer falta.
+están en git): `app/.env`, `app/google-services.json`, el JSON de la
+cuenta de servicio de Firebase (solo hace falta si hay que rehacer
+`eas credentials`, no para uso normal), y la env var `GOOGLE_SERVICES_JSON`
+en EAS ya queda del lado del servidor, no depende de la compu.
 
 ## Estado técnico (actualizado 2026-09-06, desde Claude Code)
 
