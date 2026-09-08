@@ -42,7 +42,7 @@ export function useAlerts(householdId) {
       .select("*")
       .eq("household_id", householdId)
       .order("created_at", { ascending: false })
-      .limit(6)
+      .limit(4)
       .then(({ data }) => active && setAlerts(data ?? []));
 
     const channel = supabase
@@ -50,7 +50,7 @@ export function useAlerts(householdId) {
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "alerts", filter: `household_id=eq.${householdId}` },
-        (payload) => setAlerts((prev) => [payload.new, ...prev].slice(0, 6))
+        (payload) => setAlerts((prev) => [payload.new, ...prev].slice(0, 4))
       )
       .subscribe();
 
@@ -62,7 +62,7 @@ export function useAlerts(householdId) {
 
   async function sendAlert({ userId, type, text }) {
     if (!supabaseReady) {
-      setAlerts((prev) => [{ id: String(Date.now()), created_at: new Date().toISOString(), type, text }, ...prev].slice(0, 6));
+      setAlerts((prev) => [{ id: String(Date.now()), created_at: new Date().toISOString(), type, text }, ...prev].slice(0, 4));
       return;
     }
     if (!householdId) return;
