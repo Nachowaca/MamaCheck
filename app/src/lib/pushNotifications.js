@@ -55,11 +55,11 @@ export async function registerForPushToken() {
 
   const { error } = await supabase
     .from("profiles")
-    .update({ push_token: tokenData.data })
+    .update({ push_token: tokenData })
     .eq("id", user.id);
   if (error) return "error guardando token: " + error.message;
 
-  return "OK: " + tokenData.data;
+  return "OK: " + tokenData;
 }
 
 // Manda un push directo vía la API de Expo (no hace falta backend propio).
