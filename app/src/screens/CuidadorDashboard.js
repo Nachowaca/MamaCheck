@@ -73,6 +73,8 @@ export default function CuidadorDashboard() {
       <OsmMap
         lat={mamaLocation?.lat ?? zone?.lat}
         lng={mamaLocation?.lng ?? zone?.lng}
+        zoneLat={zone?.lat}
+        zoneLng={zone?.lng}
         safeRadius={zone?.radius_m ?? 150}
       />
 

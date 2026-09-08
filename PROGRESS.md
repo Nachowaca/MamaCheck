@@ -72,6 +72,23 @@ diseño/producto, no lo pises.
   mamá manda su ubicación real una vez al abrir y cada 2 min mientras la
   tiene abierta (`writeCurrentLocationOnce` en `app/src/lib/locationTask.js`).
   Verificado 2026-09-06: el mapa de Nacho ya mostró su punto real.
+- **Fix de mapa (2026-09-07):** el círculo de zona segura se dibujaba
+  siempre sobre el punto de mamá en vez de sobre su casa — si se alejaba, el
+  mapa lo escondía en vez de mostrarlo (justo lo contrario de para qué sirve
+  el mapa). Ahora `OsmMap` recibe el centro de la zona por separado
+  (`zoneLat`/`zoneLng`) y hace `fitBounds` para que se vean los dos puntos
+  (mamá + su casa) y la distancia real entre ambos.
+- **Notificaciones push:** armadas (`app/src/lib/pushNotifications.js`,
+  columna `push_token` en `profiles`, se manda al pasar cualquier alerta —
+  SOS, check-in, salida/vuelta de zona). Confirmado: Expo sacó las push
+  remotas de Expo Go en el SDK 53 (tira error apenas se importa el módulo,
+  no solo al usarlo) — el código ya lo esquiva con un `require` condicional
+  para no romper nada mientras seguimos en Expo Go, pero **no se puede
+  probar de verdad hasta el dev build**.
+- Nombres reales corregidos en los profiles (quedaban como "ignacional26" /
+  "lisboaser", el prefijo del mail, en vez de "Nacho" / "Laura").
+- Proyecto EAS creado (`nacowakas-team` / projectId ya en `app/app.json`) —
+  primer paso para el dev build.
 
 **Para qué es el mapa (confirmado con Nacho, 2026-09-06):** el objetivo no es
 solo "ver un punto" — es que Nacho sepa que mamá está bien, y en particular
@@ -88,8 +105,11 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
    zona ya está programada (`recordLocationAndCheckZone` en
    `app/src/lib/locationTask.js`) — avisa una sola vez en cada transición,
    no repite mientras se mantiene el mismo estado.
-2. Dev build con EAS para probar ubicación real en background (no funciona
-   en Expo Go; hoy depende de que ella tenga la app abierta).
+2. **Dev build con EAS** — el paso que más desbloquea: ubicación real en
+   background (hoy depende de que ella tenga la app abierta) y notificaciones
+   push (código ya armado, ver abajo, pero Expo Go no las deja correr).
+   Proyecto EAS ya creado (`nacowakas-team`) y projectId ya en `app.json` —
+   falta correr el build en sí (`eas build --profile development`).
 3. **Análisis de IA con Claude — en pausa, a mitad de camino (2026-09-06).**
    Qué es y por qué hace falta esto en particular (para retomar con más
    contexto): la API key de Anthropic es un secreto real (a diferencia de la

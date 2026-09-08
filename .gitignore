@@ -45,3 +45,8 @@ Captura de pantalla*.png
 
 # cache del Supabase CLI
 supabase/.temp/
+
+# archivos internos de Claude Code / capturas sueltas
+.claude/scheduled_tasks.lock
+Captura de pantalla*.png
+WhatsApp Image*.jpeg

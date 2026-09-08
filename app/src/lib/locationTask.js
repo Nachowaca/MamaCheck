@@ -1,6 +1,7 @@
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
 import { supabase, supabaseReady } from "./supabase";
+import { sendPushTo } from "./pushNotifications";
 
 export const LOCATION_TASK = "mamacheck-background-location";
 
@@ -43,12 +44,20 @@ async function recordLocationAndCheckZone(householdId, userId, lat, lng) {
   const wasInside = lastZoneAlert ? lastZoneAlert.type === "zone_enter" : true;
   if (isInside === wasInside) return;
 
+  const alertText = isInside ? "Volvió a una zona segura" : "Salió de la zona segura";
   await supabase.from("alerts").insert({
     household_id: householdId,
     user_id: userId,
     type: isInside ? "zone_enter" : "zone_exit",
-    text: isInside ? "Volvió a una zona segura" : "Salió de la zona segura",
+    text: alertText,
   });
+
+  const { data: others } = await supabase
+    .from("profiles")
+    .select("push_token")
+    .eq("household_id", householdId)
+    .neq("id", userId);
+  others?.forEach((p) => sendPushTo(p.push_token, isInside ? "Volvió a la zona segura" : "Salió de la zona segura", alertText));
 }
 
 TaskManager.defineTask(LOCATION_TASK, async ({ data, error }) => {

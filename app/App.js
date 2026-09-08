@@ -1,7 +1,9 @@
 import "./src/lib/locationTask";
+import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { AuthProvider, useAuth } from "./src/lib/AuthContext";
+import { registerForPushToken } from "./src/lib/pushNotifications";
 import { C } from "./src/theme/colors";
 import LoginGate from "./src/screens/LoginGate";
 import MamaHome from "./src/screens/MamaHome";
@@ -9,6 +11,12 @@ import CuidadorDashboard from "./src/screens/CuidadorDashboard";
 
 function Root() {
   const { session, profile, loading } = useAuth();
+
+  useEffect(() => {
+    if (profile?.role) {
+      registerForPushToken().catch((e) => console.warn("push token:", e?.message ?? e));
+    }
+  }, [profile?.role]);
 
   if (loading) {
     return (

@@ -11,7 +11,10 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.mamacheck.app",
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"],
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ],
         "NSLocationWhenInUseUsageDescription": "MamaCheck usa tu ubicación para que tu familia sepa que estás bien.",
         "NSLocationAlwaysAndWhenInUseUsageDescription": "MamaCheck comparte tu ubicación en segundo plano con tu familia."
       }
@@ -29,7 +32,12 @@
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
         "FOREGROUND_SERVICE",
-        "FOREGROUND_SERVICE_LOCATION"
+        "FOREGROUND_SERVICE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION"
       ]
     },
     "web": {
@@ -45,6 +53,12 @@
           "isAndroidForegroundServiceEnabled": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "7a0272d9-ae9d-4d7e-ab14-9ee9712a02a6"
+      }
+    },
+    "owner": "nacowakas-team"
   }
 }

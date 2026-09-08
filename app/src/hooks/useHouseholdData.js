@@ -1,6 +1,15 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase, supabaseReady } from "../lib/supabase";
 import { MOCK_CONTACTS, MOCK_ALERTS, MOCK_ZONE, MOCK_LOCATION, MOCK_MAMA_PROFILE } from "../lib/mockData";
+import { sendPushTo } from "../lib/pushNotifications";
+
+const ALERT_TITLES = {
+  sos: "Pidió ayuda",
+  checkin: "Check-in",
+  zone_exit: "Salió de la zona segura",
+  zone_enter: "Volvió a la zona segura",
+  message: "Mensaje",
+};
 
 export function useContacts(householdId) {
   const [contacts, setContacts] = useState(supabaseReady ? [] : MOCK_CONTACTS);
@@ -58,6 +67,13 @@ export function useAlerts(householdId) {
     }
     if (!householdId) return;
     await supabase.from("alerts").insert({ household_id: householdId, user_id: userId, type, text });
+
+    const { data: others } = await supabase
+      .from("profiles")
+      .select("push_token")
+      .eq("household_id", householdId)
+      .neq("id", userId);
+    others?.forEach((p) => sendPushTo(p.push_token, ALERT_TITLES[type] ?? "MamaCheck", text));
   }
 
   return { alerts, sendAlert };

@@ -17,6 +17,7 @@ create table profiles (
   name text,
   email text,
   phone text,
+  push_token text,
   created_at timestamptz not null default now()
 );
 
