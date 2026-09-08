@@ -62,6 +62,31 @@ export async function registerForPushToken() {
   return "OK: " + tokenData;
 }
 
+const CHECKIN_REMINDER_ID = "checkin-reminder";
+
+// Recordatorio local (no pasa por el server): cada 6hs le avisa a mamá que
+// avise que está bien. Se re-programa cada vez que abre la app — pasar el
+// mismo `identifier` pisa el anterior en vez de duplicarlo.
+export async function scheduleCheckinReminder() {
+  if (!Notifications) return;
+  await Notifications.scheduleNotificationAsync({
+    identifier: CHECKIN_REMINDER_ID,
+    content: {
+      title: "¿Estás bien?",
+      body: "Abrí MamaCheck y avisale a tu familia que estás bien.",
+      sound: "default",
+    },
+    trigger: { seconds: 6 * 60 * 60, repeats: true },
+  });
+}
+
+export async function cancelCheckinReminder() {
+  if (!Notifications) return;
+  try {
+    await Notifications.cancelScheduledNotificationAsync(CHECKIN_REMINDER_ID);
+  } catch {}
+}
+
 // Manda un push directo vía la API de Expo (no hace falta backend propio).
 export async function sendPushTo(pushToken, title, body) {
   if (!pushToken) return;

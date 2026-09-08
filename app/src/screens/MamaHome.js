@@ -4,6 +4,7 @@ import { C, radiusLg, radiusMd } from "../theme/colors";
 import { useAuth } from "../lib/AuthContext";
 import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
+import { scheduleCheckinReminder } from "../lib/pushNotifications";
 import ExitButton from "../components/ExitButton";
 import { Button } from "../components/common";
 
@@ -21,6 +22,8 @@ export default function MamaHome() {
   const [sosSent, setSosSent] = useState(false);
 
   useEffect(() => {
+    scheduleCheckinReminder().catch((e) => console.warn("checkin reminder:", e?.message ?? e));
+
     startBackgroundLocation().catch((e) => console.warn("background location:", e?.message ?? e));
 
     // Mientras el background no funcione en Expo Go: manda la ubicación real
@@ -35,6 +38,7 @@ export default function MamaHome() {
   function checkIn() {
     setCheckInNote("Avisamos a tu familia recién ahora");
     sendAlert({ userId: session?.user?.id, type: "checkin", text: 'Check-in: "Estoy bien"' });
+    scheduleCheckinReminder().catch((e) => console.warn("checkin reminder:", e?.message ?? e));
   }
 
   function sendSos() {
