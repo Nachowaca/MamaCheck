@@ -5,6 +5,7 @@ export function Card({ children, style }) {
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
+// Tag siempre vive adentro de una Card (superficie clara) — texto oscuro.
 export function Tag({ children, variant = "outline" }) {
   return (
     <View style={[styles.tag, tagVariants[variant]]}>
@@ -13,20 +14,24 @@ export function Tag({ children, variant = "outline" }) {
   );
 }
 
-export function Button({ children, onPress, variant = "primary", style, disabled }) {
+// onDark: true cuando el botón flota directo sobre el fondo oscuro del
+// shell (no adentro de una Card) — cambia a texto claro para que se lea.
+export function Button({ children, onPress, variant = "primary", onDark = false, style, disabled }) {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled}
       style={({ pressed }) => [
         styles.btn,
-        btnVariants[variant],
+        onDark ? btnVariantsDark[variant] : btnVariants[variant],
         disabled && styles.btnDisabled,
         pressed && !disabled && styles.btnPressed,
         style,
       ]}
     >
-      <Text style={[styles.btnText, btnTextVariants[variant]]}>{children}</Text>
+      <Text style={[styles.btnText, onDark ? btnTextVariantsDark[variant] : btnTextVariants[variant]]}>
+        {children}
+      </Text>
     </Pressable>
   );
 }
@@ -58,23 +63,38 @@ const styles = StyleSheet.create({
 });
 
 const tagVariants = StyleSheet.create({
-  accent: { backgroundColor: C.accent800 },
+  accent: { backgroundColor: C.accent100 },
   outline: { borderWidth: 1, borderColor: C.accent, backgroundColor: "transparent" },
-  neutral: { backgroundColor: C.neutral800 },
+  neutral: { backgroundColor: C.surfaceAlt },
 });
 const tagTextVariants = StyleSheet.create({
-  accent: { color: C.accent100 },
-  outline: { color: C.accent },
-  neutral: { color: "#f3f5fe" },
+  accent: { color: C.accent800 },
+  outline: { color: C.accentText },
+  neutral: { color: C.textCard },
 });
 
+// Botones adentro de una Card / superficie clara (default)
 const btnVariants = StyleSheet.create({
   primary: { borderWidth: 1, borderColor: C.accent, backgroundColor: "transparent" },
-  secondary: { borderWidth: 1, borderColor: C.divider, backgroundColor: "transparent" },
+  secondary: { borderWidth: 1, borderColor: C.cardDivider, backgroundColor: "transparent" },
   ghost: { backgroundColor: "transparent" },
   ghostDanger: { borderWidth: 1, borderColor: C.danger, backgroundColor: "transparent" },
 });
 const btnTextVariants = StyleSheet.create({
+  primary: { color: C.accentText },
+  secondary: { color: C.textCard },
+  ghost: { color: C.accentText },
+  ghostDanger: { color: C.dangerTextOnLight },
+});
+
+// Botones flotando directo sobre el fondo oscuro del shell
+const btnVariantsDark = StyleSheet.create({
+  primary: { borderWidth: 1, borderColor: C.accent, backgroundColor: "transparent" },
+  secondary: { borderWidth: 1, borderColor: C.shellDivider, backgroundColor: "transparent" },
+  ghost: { backgroundColor: "transparent" },
+  ghostDanger: { borderWidth: 1, borderColor: C.danger, backgroundColor: "transparent" },
+});
+const btnTextVariantsDark = StyleSheet.create({
   primary: { color: C.accent },
   secondary: { color: C.text },
   ghost: { color: C.accent },

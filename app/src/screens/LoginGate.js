@@ -124,7 +124,7 @@ export default function LoginGate() {
             <TextInput
               style={styles.input}
               placeholder="tu-mail@gmail.com"
-              placeholderTextColor="rgba(233,233,237,0.4)"
+              placeholderTextColor="rgba(34,31,54,0.4)"
               autoCapitalize="none"
               keyboardType="email-address"
               value={email}
@@ -134,7 +134,7 @@ export default function LoginGate() {
             <TextInput
               style={styles.input}
               placeholder="Contraseña"
-              placeholderTextColor="rgba(233,233,237,0.4)"
+              placeholderTextColor="rgba(34,31,54,0.4)"
               secureTextEntry
               value={password}
               onChangeText={setPassword}
@@ -199,10 +199,10 @@ const styles = StyleSheet.create({
     marginBottom: 14,
   },
   check: { width: 22, height: 12, borderLeftWidth: 2, borderBottomWidth: 2, borderColor: C.accent, transform: [{ rotate: "-45deg" }] },
-  title: { fontSize: 24, fontWeight: "500", color: C.text },
-  subtitle: { fontSize: 13, color: C.text, opacity: 0.6, marginBottom: 26 },
-  prompt: { fontSize: 19, fontWeight: "500", color: C.text, opacity: 0.9, marginBottom: 8, alignSelf: "center" },
-  error: { fontSize: 12, color: C.dangerText, marginTop: 10, textAlign: "center" },
+  title: { fontSize: 24, fontWeight: "500", color: C.textCard },
+  subtitle: { fontSize: 13, color: C.textCardMuted, marginBottom: 26 },
+  prompt: { fontSize: 19, fontWeight: "500", color: C.textCard, marginBottom: 8, alignSelf: "center" },
+  error: { fontSize: 12, color: C.dangerTextOnLight, marginTop: 10, textAlign: "center" },
   roleCard: {
     width: "100%",
     flexDirection: "row",
@@ -221,16 +221,16 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   roleIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: "rgba(145,132,217,0.18)", alignItems: "center", justifyContent: "center" },
-  roleTitle: { fontSize: 15, fontWeight: "500", color: C.text },
-  roleSubtitle: { fontSize: 12.5, color: C.text, opacity: 0.6, marginTop: 1 },
+  roleTitle: { fontSize: 15, fontWeight: "500", color: C.textCard },
+  roleSubtitle: { fontSize: 12.5, color: C.textCardMuted, marginTop: 1 },
   input: {
     width: "100%",
     height: 44,
     borderRadius: radiusMd,
     borderWidth: 1,
-    borderColor: C.divider,
+    borderColor: C.cardDivider,
     paddingHorizontal: 14,
-    color: C.text,
+    color: C.textCard,
     fontSize: 14,
     marginTop: 10,
   },
@@ -244,18 +244,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 14,
   },
-  primaryBtnText: { color: C.accent, fontWeight: "500", fontSize: 14 },
-  hint: { fontSize: 11, color: C.text, opacity: 0.5, marginTop: 8, textAlign: "center" },
+  primaryBtnText: { color: C.accentText, fontWeight: "500", fontSize: 14 },
+  hint: { fontSize: 11, color: C.textCardMuted, marginTop: 8, textAlign: "center" },
   googleBtn: {
     width: "100%",
     height: 44,
     borderRadius: radiusMd,
     borderWidth: 1,
-    borderColor: C.divider,
+    borderColor: C.cardDivider,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 10,
   },
-  googleBtnText: { color: C.text, fontWeight: "500", fontSize: 14 },
-  back: { color: C.accent, fontSize: 12, opacity: 0.7, marginTop: 14 },
+  googleBtnText: { color: C.textCard, fontWeight: "500", fontSize: 14 },
+  back: { color: C.accentText, fontSize: 12, opacity: 0.8, marginTop: 14 },
 });
