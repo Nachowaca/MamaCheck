@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { View, Text, Pressable, StyleSheet, ScrollView, Linking, ActivityIndicator } from "react-native";
+import { View, Text, Pressable, StyleSheet, ScrollView, Linking } from "react-native";
 import { C, radiusMd } from "../theme/colors";
 import { useAuth } from "../lib/AuthContext";
 import { useAlerts, useLatestLocation, useSafeZones, useOtherProfile } from "../hooks/useHouseholdData";
-import { supabase, supabaseReady } from "../lib/supabase";
 import OsmMap from "../components/OsmMap";
 import { Card, Tag, Button } from "../components/common";
 import ProfileScreen from "./ProfileScreen";
@@ -24,27 +23,8 @@ export default function CuidadorDashboard() {
   const mamaLocation = useLatestLocation(householdId, mama?.id);
   const [chatOpen, setChatOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [aiText, setAiText] = useState(null);
-  const [aiLoading, setAiLoading] = useState(false);
-  const [aiError, setAiError] = useState("");
 
   const lastSos = alerts.find((a) => a.type === "sos");
-
-  async function generateAiSummary() {
-    if (!supabaseReady) return;
-    setAiLoading(true);
-    setAiError("");
-    try {
-      const { data, error } = await supabase.functions.invoke("analyze-mama");
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
-      setAiText(data.text);
-    } catch (e) {
-      setAiError(e.message ?? String(e));
-    } finally {
-      setAiLoading(false);
-    }
-  }
 
   if (showProfile) {
     return <ProfileScreen onBack={() => setShowProfile(false)} mama={mama} />;
@@ -82,17 +62,9 @@ export default function CuidadorDashboard() {
 
       <Card style={{ gap: 10 }}>
         <Text style={styles.aiLabel}>Análisis de IA</Text>
-        {aiText ? (
-          <Text style={styles.aiBody}>{aiText}</Text>
-        ) : (
-          <Text style={styles.aiBody}>
-            Tocá "Generar" para que Claude arme un resumen de las últimas 24 horas
-            con los datos reales de mamá (ubicación, check-ins, alertas).
-          </Text>
-        )}
-        {aiError !== "" && <Text style={styles.aiError}>{aiError}</Text>}
-        <Button variant="secondary" onPress={generateAiSummary} disabled={aiLoading}>
-          {aiLoading ? <ActivityIndicator color={C.textCard} /> : aiText ? "Actualizar" : "Generar"}
+        <Text style={styles.aiBody}>Generar estará habilitado en versiones futuras.</Text>
+        <Button variant="secondary" disabled>
+          Generar
         </Button>
       </Card>
 
