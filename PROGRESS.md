@@ -36,8 +36,29 @@ Pregunta clave resuelta: ¿cómo se obtiene la ubicación real de mamá?
 
 ## 🔴 Ahora mismo (2026-09-08, retomar por acá)
 
-**En el medio del setup de push notifications reales — muy cerca de cerrarlo.**
-Historia completa de esta vuelta (para no repetir pasos ya hechos):
+**Push token real confirmado funcionando del lado de Nacho.** Causa raíz del
+`OK: undefined`: bug de código, no de Firebase/EAS — `registerForPushToken()`
+en `app/src/lib/pushNotifications.js` hacía
+`const { data: tokenData } = await Notifications.getExpoPushTokenAsync(...)`
+(ya destructura `data` en `tokenData`) y después volvía a leer `tokenData.data`
+(undefined, porque `tokenData` ya era el string del token). Fix commiteado y
+pusheado (`7a245e3`) — cambio solo JS, no hizo falta rebuild nativo, tomó con
+reload de Metro sobre el dev build ya instalado. Confirmado con Alert real:
+`OK: ExponentPushToken[rfSFOZNUNulBBRcBEaCvQ7]` en el celu de Nacho.
+
+**Pendiente para cerrar del todo:**
+- Instalar el mismo APK (link en `APK_ACTUAL.md`) en el celular de mamá y
+  loguearla, para que su perfil tenga su propio `push_token`. Nacho no tiene
+  su celu a mano todavía — **queda para otro día**, no bloqueante.
+- Con ambos tokens guardados: probar un SOS/check-in real con la app del
+  otro lado completamente cerrada (no solo en background) y confirmar que
+  llega la notificación nativa (barra del celu), no solo el aviso interno.
+- Una vez confirmado de punta a punta: sacar el código de debug temporal
+  (buscar "TEMPORAL" en `App.js` y `pushNotifications.js`) y commitear la
+  limpieza.
+
+Historia completa de la vuelta anterior de debugging (ya resuelta, dejar
+para contexto):
 
 1. Firebase creado (proyecto "MamaCheck", package `com.mamacheck.app`),
    `google-services.json` descargado a `app/google-services.json`
