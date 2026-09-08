@@ -1,0 +1,77 @@
+// Convertido de app.json a JS: necesitamos leer el google-services.json desde
+// una variable de entorno de archivo en los builds de EAS (el archivo real
+// está en .gitignore, y EAS Build solo sube lo que está en git).
+module.exports = {
+  expo: {
+    name: "MamaCheck",
+    slug: "mamacheck",
+    scheme: "mamacheck",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/icon.png",
+    userInterfaceStyle: "dark",
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: "com.mamacheck.app",
+      infoPlist: {
+        UIBackgroundModes: ["location", "fetch"],
+        NSLocationWhenInUseUsageDescription:
+          "MamaCheck usa tu ubicación para que tu familia sepa que estás bien.",
+        NSLocationAlwaysAndWhenInUseUsageDescription:
+          "MamaCheck comparte tu ubicación en segundo plano con tu familia.",
+      },
+    },
+    android: {
+      package: "com.mamacheck.app",
+      // En EAS Build viene de la env var de archivo GOOGLE_SERVICES_JSON;
+      // en local, del archivo real (no versionado) en esta carpeta.
+      googleServicesFile: process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+      adaptiveIcon: {
+        backgroundColor: "#161826",
+        foregroundImage: "./assets/android-icon-foreground.png",
+        backgroundImage: "./assets/android-icon-background.png",
+        monochromeImage: "./assets/android-icon-monochrome.png",
+      },
+      permissions: [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE",
+        "FOREGROUND_SERVICE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.ACCESS_BACKGROUND_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_LOCATION",
+      ],
+    },
+    web: {
+      favicon: "./assets/favicon.png",
+    },
+    plugins: [
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          icon: "./assets/icon.png",
+          color: "#9184d9",
+        },
+      ],
+      [
+        "expo-location",
+        {
+          locationAlwaysAndWhenInUsePermission:
+            "MamaCheck comparte tu ubicación en segundo plano con tu familia.",
+          isAndroidBackgroundLocationEnabled: true,
+          isAndroidForegroundServiceEnabled: true,
+        },
+      ],
+    ],
+    extra: {
+      eas: {
+        projectId: "7a0272d9-ae9d-4d7e-ab14-9ee9712a02a6",
+      },
+    },
+    owner: "nacowakas-team",
+  },
+};

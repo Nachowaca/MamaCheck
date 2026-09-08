@@ -32,6 +32,7 @@ Thumbs.db
 .env
 .env*.local
 app/.env
+app/google-services.json
 
 # typescript
 *.tsbuildinfo
