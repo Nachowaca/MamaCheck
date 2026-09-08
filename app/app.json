@@ -46,6 +46,13 @@
     "plugins": [
       "expo-web-browser",
       [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#9184d9"
+        }
+      ],
+      [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "MamaCheck comparte tu ubicación en segundo plano con tu familia.",
