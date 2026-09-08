@@ -1,7 +1,7 @@
 import { View, Platform } from "react-native";
 import { C } from "../theme/colors";
 
-const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
+const HTML = (lat, lng, zones, accent) => `
 <!DOCTYPE html>
 <html><head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -11,20 +11,27 @@ const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
   .leaflet-control-attribution{font-size:9px;background:rgba(22,24,38,0.7);color:#e9e9ed}
   .leaflet-control-attribution a{color:${accent}}
   .leaflet-control-zoom{display:none}
+  .zone-label{font-size:11px;font-weight:600;color:${accent};background:rgba(243,245,254,0.9);padding:1px 6px;border-radius:8px;white-space:nowrap}
 </style>
 </head><body>
 <div id="map"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
-  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${zoneLat}, ${zoneLng}], 16);
+  var zones = ${JSON.stringify(zones)};
+  var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${lat}, ${lng}], 16);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap &copy; CARTO'
   }).addTo(map);
 
-  // Círculo de zona segura: alrededor de la zona (ej. su casa), no de mamá —
-  // así si ella se aleja, se ve la distancia real entre los dos puntos.
-  var zoneCircle = L.circle([${zoneLat}, ${zoneLng}], { radius: ${safeRadius}, color: '${accent}', weight: 1.5, dashArray: '4 4', fillOpacity: 0.06 }).addTo(map);
+  // Un círculo por cada zona segura (casa de mamá, casa de un familiar,
+  // etc.) — el punto de mamá se dibuja aparte, así si se aleja de todas
+  // se ve la distancia real hacia la más cercana.
+  var zoneCircles = zones.map(function (z) {
+    return L.circle([z.lat, z.lng], { radius: z.radius_m, color: '${accent}', weight: 1.5, dashArray: '4 4', fillOpacity: 0.06 })
+      .bindTooltip(z.name || 'Zona segura', { permanent: true, direction: 'top', className: 'zone-label', offset: [0, -4] })
+      .addTo(map);
+  });
 
   var dotIcon = L.divIcon({
     className: '',
@@ -34,7 +41,7 @@ const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
   });
   var marker = L.marker([${lat}, ${lng}], { icon: dotIcon }).addTo(map);
 
-  var bounds = L.featureGroup([zoneCircle, marker]).getBounds();
+  var bounds = L.featureGroup(zoneCircles.concat([marker])).getBounds();
   if (bounds.isValid()) {
     map.fitBounds(bounds, { padding: [36, 36], maxZoom: 16 });
   } else {
@@ -48,7 +55,7 @@ const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
       var data = JSON.parse(e.data);
       if (data.lat && data.lng) {
         marker.setLatLng([data.lat, data.lng]);
-        var newBounds = L.featureGroup([zoneCircle, marker]).getBounds();
+        var newBounds = L.featureGroup(zoneCircles.concat([marker])).getBounds();
         map.fitBounds(newBounds, { padding: [36, 36], maxZoom: 16 });
       }
     } catch (err) {}
@@ -62,13 +69,11 @@ const HTML = (lat, lng, zoneLat, zoneLng, safeRadius, accent) => `
 // caemos a un <iframe> del navegador con el mismo HTML.
 const NativeWebView = Platform.OS === "web" ? null : require("react-native-webview").WebView;
 
-export default function OsmMap({ lat, lng, zoneLat, zoneLng, safeRadius = 150, height = 220 }) {
+export default function OsmMap({ lat, lng, zones = [], height = 220 }) {
   if (lat == null || lng == null) {
     return <View style={{ height, backgroundColor: "#1b2334" }} />;
   }
-  // Sin zona segura cargada todavía: el círculo cae sobre el mismo punto,
-  // como antes (comportamiento de respaldo).
-  const html = HTML(lat, lng, zoneLat ?? lat, zoneLng ?? lng, safeRadius, C.accent);
+  const html = HTML(lat, lng, zones, C.accent);
 
   if (Platform.OS === "web") {
     return (

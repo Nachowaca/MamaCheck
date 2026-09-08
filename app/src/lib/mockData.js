@@ -10,7 +10,9 @@ export const MOCK_ALERTS = [
   { id: "2", created_at: new Date(Date.now() - 60 * 60000).toISOString(), type: "checkin", text: 'Check-in: "Estoy bien"' },
 ];
 
-export const MOCK_ZONE = { lat: -34.9011, lng: -56.1645, radius_m: 150 };
+export const MOCK_ZONES = [
+  { id: "z1", name: "Casa", lat: -34.9011, lng: -56.1645, radius_m: 200 },
+];
 export const MOCK_LOCATION = { lat: -34.9013, lng: -56.1642 };
 export const MOCK_MAMA_PROFILE = {
   id: "mock-mama",

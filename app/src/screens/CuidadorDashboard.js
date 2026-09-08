@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View, Text, Pressable, StyleSheet, ScrollView, Linking, ActivityIndicator } from "react-native";
 import { C, radiusMd } from "../theme/colors";
 import { useAuth } from "../lib/AuthContext";
-import { useAlerts, useLatestLocation, useSafeZone, useOtherProfile } from "../hooks/useHouseholdData";
+import { useAlerts, useLatestLocation, useSafeZones, useOtherProfile } from "../hooks/useHouseholdData";
 import { supabase, supabaseReady } from "../lib/supabase";
 import OsmMap from "../components/OsmMap";
 import { Card, Tag, Button } from "../components/common";
@@ -19,7 +19,7 @@ export default function CuidadorDashboard() {
   const { profile, signOut } = useAuth();
   const householdId = profile?.household_id;
   const { alerts, sendAlert } = useAlerts(householdId);
-  const zone = useSafeZone(householdId);
+  const zones = useSafeZones(householdId);
   const mama = useOtherProfile(householdId, "mama");
   const mamaLocation = useLatestLocation(householdId, mama?.id);
   const [chatOpen, setChatOpen] = useState(false);
@@ -75,11 +75,9 @@ export default function CuidadorDashboard() {
       )}
 
       <OsmMap
-        lat={mamaLocation?.lat ?? zone?.lat}
-        lng={mamaLocation?.lng ?? zone?.lng}
-        zoneLat={zone?.lat}
-        zoneLng={zone?.lng}
-        safeRadius={zone?.radius_m ?? 150}
+        lat={mamaLocation?.lat ?? zones[0]?.lat}
+        lng={mamaLocation?.lng ?? zones[0]?.lng}
+        zones={zones}
       />
 
       <Card style={{ gap: 10 }}>

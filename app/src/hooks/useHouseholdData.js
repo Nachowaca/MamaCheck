@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { supabase, supabaseReady } from "../lib/supabase";
-import { MOCK_CONTACTS, MOCK_ALERTS, MOCK_ZONE, MOCK_LOCATION, MOCK_MAMA_PROFILE } from "../lib/mockData";
+import { MOCK_CONTACTS, MOCK_ALERTS, MOCK_ZONES, MOCK_LOCATION, MOCK_MAMA_PROFILE } from "../lib/mockData";
 import { sendPushTo } from "../lib/pushNotifications";
 
 const ALERT_TITLES = {
@@ -136,17 +136,20 @@ export function useOtherProfile(householdId, role) {
   return other;
 }
 
-export function useSafeZone(householdId) {
-  const [zone, setZone] = useState(supabaseReady ? null : MOCK_ZONE);
+// Puede haber más de una zona segura por household (casa de mamá, casa de
+// un familiar, etc.) — el mapa dibuja un círculo por cada una y la
+// detección de salida/entrada (locationTask.js) chequea si está dentro de
+// CUALQUIERA de ellas, no solo la primera.
+export function useSafeZones(householdId) {
+  const [zones, setZones] = useState(supabaseReady ? [] : MOCK_ZONES);
   useEffect(() => {
     if (!supabaseReady || !householdId) return;
     supabase
       .from("safe_zones")
       .select("*")
       .eq("household_id", householdId)
-      .limit(1)
-      .single()
-      .then(({ data }) => data && setZone(data));
+      .order("created_at")
+      .then(({ data }) => setZones(data ?? []));
   }, [householdId]);
-  return zone;
+  return zones;
 }
