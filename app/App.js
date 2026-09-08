@@ -1,7 +1,7 @@
 import "./src/lib/locationTask";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import { View, ActivityIndicator, StyleSheet, Alert } from "react-native";
 import { AuthProvider, useAuth } from "./src/lib/AuthContext";
 import { registerForPushToken } from "./src/lib/pushNotifications";
 import { C } from "./src/theme/colors";
@@ -14,7 +14,12 @@ function Root() {
 
   useEffect(() => {
     if (profile?.role) {
-      registerForPushToken().catch((e) => console.warn("push token:", e?.message ?? e));
+      registerForPushToken()
+        .then((result) => Alert.alert("Debug: push token", String(result))) // TEMPORAL, sacar después
+        .catch((e) => {
+          console.warn("push token:", e?.message ?? e);
+          Alert.alert("Debug: push token — excepción", String(e?.message ?? e)); // TEMPORAL, sacar después
+        });
     }
   }, [profile?.role]);
 

@@ -27,7 +27,9 @@ if (!isExpoGo) {
 // Pide permiso, saca el push token de este celu y lo guarda en el profile
 // del usuario logueado — así el otro lado sabe a dónde mandarle avisos.
 export async function registerForPushToken() {
-  if (!supabaseReady || Platform.OS === "web" || !Notifications) return;
+  if (!supabaseReady) return "sin supabase";
+  if (Platform.OS === "web") return "es web";
+  if (!Notifications) return "modulo Notifications no cargado (isExpoGo=" + isExpoGo + ")";
 
   const { status: existing } = await Notifications.getPermissionsAsync();
   let status = existing;
@@ -35,7 +37,7 @@ export async function registerForPushToken() {
     const req = await Notifications.requestPermissionsAsync();
     status = req.status;
   }
-  if (status !== "granted") return;
+  if (status !== "granted") return "permiso no concedido: " + status;
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
@@ -49,9 +51,15 @@ export async function registerForPushToken() {
 
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user;
-  if (!user) return;
+  if (!user) return "sin usuario logueado";
 
-  await supabase.from("profiles").update({ push_token: tokenData.data }).eq("id", user.id);
+  const { error } = await supabase
+    .from("profiles")
+    .update({ push_token: tokenData.data })
+    .eq("id", user.id);
+  if (error) return "error guardando token: " + error.message;
+
+  return "OK: " + tokenData.data;
 }
 
 // Manda un push directo vía la API de Expo (no hace falta backend propio).
