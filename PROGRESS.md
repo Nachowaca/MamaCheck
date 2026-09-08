@@ -34,6 +34,37 @@ Pregunta clave resuelta: ¿cómo se obtiene la ubicación real de mamá?
 ## Notas de trabajo
 - En Claude Code: sesiones chicas y puntuales, no pedir "armar todo" en un comando gigante. Modelo más económico para tareas mecánicas si el comando lo permite.
 
+## 🔴 Ahora mismo (2026-09-08, retomar por acá)
+
+**En el medio del setup de push notifications reales.** Estado exacto:
+- Firebase creado (proyecto "MamaCheck", package `com.mamacheck.app`),
+  `google-services.json` descargado y puesto en `app/google-services.json`
+  (gitignored — no está en el repo, solo en esta compu).
+- Cuenta de servicio de Firebase (`*firebase-adminsdk*.json`, en
+  `app/`, también gitignored) ya subida a EAS vía
+  `eas credentials` → Android → Push Notifications → "Upload an FCM API Key".
+  Esto ya quedó hecho, no hay que repetirlo.
+- `app.json` → convertido a `app.config.js` porque EAS Build solo sube
+  archivos versionados en git, y `google-services.json` no lo está (a
+  propósito). `app.config.js` lee `process.env.GOOGLE_SERVICES_JSON`
+  (variable de entorno de tipo archivo, ya creada en EAS con
+  `eas env:create` → apunta al `google-services.json` real) y cae al
+  archivo local si esa env var no existe.
+- **Build de EAS corriendo/recién terminado** con todo esto — cuando
+  vuelvas a esta conversación, lo primero es chequear
+  `eas build:list --limit 1` (o pedirle a Nacho la captura) y, si terminó,
+  pasarle el link del APK para instalar y probar push de verdad (SOS con
+  la app de mamá cerrada del todo → ¿le llega notificación real a Nacho?).
+- Si el push todavía no llega después de este build: revisar que
+  `push_token` en `profiles` dejó de ser `null` (`select push_token from
+  profiles`) — si sigue null, el problema es que el celu no consigue el
+  token (revisar permisos/logs), no el envío.
+
+**Si Nacho reinstala en una compu nueva**: necesita recrear a mano (no
+están en git): `app/.env`, `app/google-services.json`, y la cuenta de
+servicio de Firebase no hace falta recrearla en el celu — pero si alguna
+vez hay que rehacer el build de EAS, esos archivos vuelven a hacer falta.
+
 ## Estado técnico (actualizado 2026-09-06, desde Claude Code)
 
 La app real vive en `app/` (Expo). Este bloque es el que se actualiza a medida
