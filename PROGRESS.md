@@ -54,6 +54,32 @@ Alert temporal sacado (`d97ff9c`).
   notificación real también en ese sentido (ya confirmado en el sentido
   Nacho→sí-mismo; falta el otro lado con mamá real).
 
+## ✅ Sesión 2026-09-08 (tarde) — puntos seguros, recordatorio y pulido de mapa
+
+- **Recordatorio automático para mamá**: notificación local (no pasa por
+  server) cada 6hs recordándole que avise que está bien si no lo hizo. Se
+  re-programa al abrir la app y después de cada check-in manual, así el
+  conteo de 6hs siempre arranca de nuevo. Código: `scheduleCheckinReminder`
+  en `app/src/lib/pushNotifications.js`, llamado desde `MamaHome.js`.
+- **Puntos seguros (varias zonas)**: `safe_zones` ya soportaba varias filas
+  por household y `locationTask.js` ya chequeaba "¿dentro de CUALQUIERA?" —
+  solo faltaba que el mapa y el hook las mostraran todas.
+  `useSafeZone` → `useSafeZones` (trae todas), `OsmMap` dibuja un círculo
+  con nombre por zona. Cargadas por SQL (mismo patrón que contactos, no hay
+  UI todavía): **Casa** (la de mamá, ya existía), **Casa de Andrea**
+  (Belgrano 2984) y **Casa de Nacho** (Francisco de Medina 1424), 200m cada
+  una, geocodeadas con Nominatim.
+- **Color del punto de mamá en el mapa**: verde si está dentro de alguna
+  zona segura, rojo si está afuera de todas — mismo cálculo haversine que
+  el chequeo real del server, corrido en el propio HTML del mapa así se
+  actualiza en vivo sin round-trip. En `OsmMap.js`.
+- **Actividad reciente**: bajada de 6 a 4 avisos en el dashboard de Nacho
+  (pedido de UI, sin lógica nueva).
+
+**Pendiente sigue siendo lo de la sección de arriba** (instalar en el celu
+de mamá + probar SOS de punta a punta desde su lado) — no bloqueante, es
+la próxima vez que Nacho tenga su celular a mano.
+
 Historia completa de la vuelta anterior de debugging (ya resuelta, dejar
 para contexto):
 
