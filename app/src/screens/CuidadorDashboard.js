@@ -7,6 +7,7 @@ import OsmMap from "../components/OsmMap";
 import { Card, Tag, Button } from "../components/common";
 import ProfileScreen from "./ProfileScreen";
 import ExitButton from "../components/ExitButton";
+import ConnectedFooter from "../components/ConnectedFooter";
 
 const QUICK_MESSAGES = [
   "Recuerda escribirme que estas bien",
@@ -99,9 +100,7 @@ export default function CuidadorDashboard() {
         </View>
       </View>
 
-      <View style={styles.connectedFooter}>
-        <Text style={styles.connectedFooterText}>ESTÁS CONECTADO A MamaCheck</Text>
-      </View>
+      <ConnectedFooter />
 
       {chatOpen && (
         <View style={styles.dialogOverlay}>
@@ -150,21 +149,4 @@ const styles = StyleSheet.create({
   dialogCard: { width: "100%", maxWidth: 440, backgroundColor: C.surface, borderRadius: 14, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
   dialogBody: { fontSize: 14, color: C.textCardMuted },
-  connectedFooter: {
-    marginTop: 8,
-    paddingVertical: 22,
-    borderRadius: radiusMd,
-    backgroundColor: "#0b0c12",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  connectedFooterText: {
-    color: "#f5d949",
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 1.2,
-    textShadowColor: "#f5d94999",
-    textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 10,
-  },
 });
