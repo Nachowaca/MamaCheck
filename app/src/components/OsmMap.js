@@ -10,7 +10,13 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
   html,body,#map{height:100%;margin:0;background:#1b2334}
   .leaflet-control-attribution{font-size:9px;background:rgba(22,24,38,0.7);color:#e9e9ed}
   .leaflet-control-attribution a{color:${accent}}
-  .leaflet-control-zoom{display:none}
+  .leaflet-control-zoom{border:none!important;box-shadow:0 2px 8px rgba(0,0,0,0.15)!important}
+  .leaflet-control-zoom a{
+    width:34px!important;height:34px!important;line-height:34px!important;
+    font-size:19px!important;color:${accent}!important;background:#f3f5fe!important;
+  }
+  .leaflet-control-zoom a:first-child{border-top-left-radius:10px!important;border-top-right-radius:10px!important}
+  .leaflet-control-zoom a:last-child{border-bottom-left-radius:10px!important;border-bottom-right-radius:10px!important}
   .zone-label{font-size:11px;font-weight:600;color:${accent};background:rgba(243,245,254,0.9);padding:1px 6px;border-radius:8px;white-space:nowrap}
 </style>
 </head><body>
@@ -46,6 +52,7 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
   }
 
   var map = L.map('map', { zoomControl: false, attributionControl: true }).setView([${lat}, ${lng}], 16);
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; OpenStreetMap contributors'
@@ -91,7 +98,7 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
 // caemos a un <iframe> del navegador con el mismo HTML.
 const NativeWebView = Platform.OS === "web" ? null : require("react-native-webview").WebView;
 
-export default function OsmMap({ lat, lng, zones = [], height = 220 }) {
+export default function OsmMap({ lat, lng, zones = [], height = 300 }) {
   if (lat == null || lng == null) {
     return <View style={{ height, backgroundColor: "#1b2334" }} />;
   }
