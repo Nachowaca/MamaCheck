@@ -77,6 +77,7 @@ export default function MamaHome() {
       </Button>
 
       <GlowText style={styles.footer}>Tu familia puede ver que estás bien</GlowText>
+      <GlowText style={styles.credit}>App creada por Nacho ❤️</GlowText>
 
       {sosOpen && (
         <Dialog>
@@ -162,6 +163,7 @@ const styles = StyleSheet.create({
   callIcon: { width: 16, height: 16, borderRadius: 8, borderWidth: 1.6, borderColor: C.textCard },
   sosBtn: { width: "100%", height: 52 },
   footer: { fontSize: 14, color: "#ffffff", fontWeight: "600", textAlign: "center" },
+  credit: { fontSize: 12, color: "#ffffff", fontWeight: "500", textAlign: "center" },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 380, backgroundColor: C.surface, borderRadius: radiusLg, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
