@@ -125,7 +125,7 @@ export default function CuidadorDashboard() {
         </View>
       </View>
 
-      <ConnectedFooter lastSeen={mamaLocation?.recorded_at} />
+      <ConnectedFooter lastSeen={mamaLocation?.recorded_at} batteryLevel={mama?.battery_level} />
 
       <Text style={styles.date}>{todayLabel()}</Text>
       <Text style={styles.credit}>App creada por Nacho</Text>
