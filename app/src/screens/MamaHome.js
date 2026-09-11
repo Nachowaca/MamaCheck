@@ -22,6 +22,11 @@ function greeting() {
   return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
 }
 
+function isDaytime() {
+  const h = new Date().getHours();
+  return h >= 6 && h < 19;
+}
+
 export default function MamaHome() {
   const { profile, session, signOut } = useAuth();
   const { contacts } = useContacts(profile?.household_id);
@@ -47,7 +52,7 @@ export default function MamaHome() {
   }, []);
 
   function checkIn() {
-    setCheckInNote("Avisamos a tu familia recién ahora");
+    setCheckInNote(isDaytime() ? "Disfruta tu día, te queremos!" : "Avisamos a tu familia recién ahora");
     sendAlert({ userId: session?.user?.id, type: "checkin", text: 'Check-in: "Estoy bien"' });
     scheduleCheckinReminder().catch((e) => console.warn("checkin reminder:", e?.message ?? e));
   }
