@@ -14,9 +14,11 @@ export default function ProfileScreen({ onBack, mama }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Pressable onPress={onBack} hitSlop={8}>
-        <Text style={styles.back}>← Volver</Text>
-      </Pressable>
+      <View style={styles.backRow}>
+        <Pressable onPress={onBack} hitSlop={8} style={({ pressed }) => [styles.backBtn, pressed && { opacity: 0.7 }]}>
+          <Text style={styles.back}>← Volver</Text>
+        </Pressable>
+      </View>
 
       <View style={styles.identity}>
         <View style={styles.avatar}>
@@ -64,8 +66,17 @@ export default function ProfileScreen({ onBack, mama }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: C.bg, padding: 16, gap: 18 },
-  back: { color: C.accent, fontSize: 14 },
+  container: { flexGrow: 1, backgroundColor: C.bg, padding: 16, paddingTop: 44, gap: 18 },
+  backRow: { flexDirection: "row", justifyContent: "flex-end" },
+  backBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 14,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: C.shellDivider,
+    backgroundColor: C.shellChip,
+  },
+  back: { color: C.accent, fontSize: 14, fontWeight: "500" },
   identity: { flexDirection: "row", alignItems: "center", gap: 14 },
   avatar: { width: 56, height: 56, borderRadius: 28, backgroundColor: C.shellChip, alignItems: "center", justifyContent: "center" },
   avatarInitial: { color: C.accent, fontSize: 20 },
