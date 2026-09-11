@@ -1,15 +1,15 @@
 # APK actual - MamaCheck
 
-Build: 2026-09-10, perfil "preview" (standalone, no necesita Metro/terminal
-corriendo). Incluye todo lo de la sesión del 10/09: batería de mamá
-(expo-battery, reemplaza la tarjeta de Análisis de IA), cuadro de estado
-verde/rojo con glow sobre el mapa, mensajes rápidos nuevos, footer animado
-"Conectado a MamaCheck!", zoom +/- y mapa más grande, login de Nacho con su
-contraseña real (permanente, igual que mamá).
+Build: 2026-09-11, perfil "preview" (standalone, no necesita Metro/terminal
+corriendo). Build final para instalar en el celular de mamá el sábado.
+Incluye todo: batería en tiempo real, detección de caída (accelerómetro,
+solo con la app abierta), botón "Resuelto" para limpiar emergencias,
+cartel de conexión real, mensajes según hora del día, SOS más chico y
+centrado, cruz de flechas + zoom en el mapa, login permanente de Nacho.
 
 ## Descarga
 
-https://expo.dev/accounts/nacowakas-team/projects/mamacheck/builds/5c2b4e53-2e2c-4b74-95d0-6e8850278eb0
+https://expo.dev/accounts/nacowakas-team/projects/mamacheck/builds/39900129-c0e0-444c-b6ca-4c3d16f0a3e5
 
 ## Instalar
 
@@ -18,10 +18,8 @@ https://expo.dev/accounts/nacowakas-team/projects/mamacheck/builds/5c2b4e53-2e2c
    pisa la instalación anterior — mismo paquete y firma).
 3. Abrir la app directamente, sin depender de la compu.
 
-## Pendiente para que la batería funcione de verdad
+## Ya hecho (no repetir)
 
-Correr en Supabase (SQL Editor) si todavía no se corrió:
-```sql
-alter table profiles add column if not exists battery_level integer;
-alter table profiles add column if not exists battery_charging boolean;
-```
+Las columnas `battery_level`/`battery_charging` en `profiles`, el tipo de
+alerta `fall`, la publicación de Realtime con `profiles`, y el trigger de
+limpieza de `locations` ya están corridos en Supabase.
