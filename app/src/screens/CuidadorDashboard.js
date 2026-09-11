@@ -8,6 +8,7 @@ import { Card, Tag, Button } from "../components/common";
 import ProfileScreen from "./ProfileScreen";
 import ExitButton from "../components/ExitButton";
 import ConnectedFooter from "../components/ConnectedFooter";
+import StatusBanner from "../components/StatusBanner";
 
 const QUICK_MESSAGES = [
   "Recuerda escribirme que estas bien",
@@ -75,14 +76,7 @@ export default function CuidadorDashboard() {
         </View>
       </View>
 
-      {lastSos && (
-        <View style={styles.sosBanner}>
-          <View>
-            <Text style={styles.sosTitle}>Emergencia activada</Text>
-            <Text style={styles.sosSubtitle}>Pidió ayuda hace un momento</Text>
-          </View>
-        </View>
-      )}
+      <StatusBanner alert={lastSos} />
 
       <OsmMap
         lat={mamaLocation?.lat ?? zones[0]?.lat}
@@ -160,9 +154,6 @@ const styles = StyleSheet.create({
   hello: { fontSize: 12, color: C.text, opacity: 0.6 },
   name: { fontSize: 20, fontWeight: "500", color: C.text },
   avatar: { width: 34, height: 34, borderRadius: 17, backgroundColor: C.shellChip, borderWidth: 1, borderColor: C.shellDivider, alignItems: "center", justifyContent: "center" },
-  sosBanner: { borderWidth: 1, borderColor: C.danger, borderRadius: radiusMd, backgroundColor: "#fceceb", padding: 12 },
-  sosTitle: { color: C.dangerTextOnLight, fontWeight: "500", fontSize: 13 },
-  sosSubtitle: { color: C.textCardMuted, fontSize: 11 },
   aiLabel: { color: C.accentText, fontSize: 10, letterSpacing: 1, textTransform: "uppercase" },
   aiTitle: { color: C.textCard, fontSize: 15, fontWeight: "500" },
   aiBody: { color: C.textCardMuted, fontSize: 13 },
