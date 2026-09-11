@@ -6,6 +6,7 @@ import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
 import { scheduleCheckinReminder } from "../lib/pushNotifications";
 import ExitButton from "../components/ExitButton";
+import GlowText from "../components/GlowText";
 import { Button } from "../components/common";
 
 function greeting() {
@@ -72,7 +73,7 @@ export default function MamaHome() {
         Necesito ayuda
       </Button>
 
-      <Text style={styles.footer}>Tu familia puede ver que estás bien</Text>
+      <GlowText style={styles.footer}>Tu familia puede ver que estás bien</GlowText>
 
       {sosOpen && (
         <Dialog>
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
   callBtn: { width: 36, height: 36, borderRadius: radiusMd, borderWidth: 1, borderColor: C.cardDivider, alignItems: "center", justifyContent: "center" },
   callIcon: { width: 16, height: 16, borderRadius: 8, borderWidth: 1.6, borderColor: C.textCard },
   sosBtn: { width: "100%", height: 52 },
-  footer: { fontSize: 14, color: C.text, opacity: 0.55, textAlign: "center" },
+  footer: { fontSize: 14, color: "#ffffff", fontWeight: "600", textAlign: "center" },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 380, backgroundColor: C.surface, borderRadius: radiusLg, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
