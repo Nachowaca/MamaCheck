@@ -358,6 +358,27 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
   barra de estado), créditos "App creada por Nacho ❤️" + fecha al pie de
   las dos pantallas, círculo de check-in de mamá pasado a verde brillante.
 
+## ✅ Sesión 2026-09-11 (madrugada) — resolver emergencias + revisión de errores
+
+- **Botón "Resuelto — todo en orden"** en el perfil de Nacho: aparece solo
+  cuando hay una emergencia activa (`sos` o `fall`), manda un alert tipo
+  `message` que limpia el cartel rojo (mismo mecanismo que cualquier
+  evento más nuevo ya usaba). Probado con datos reales end-to-end.
+- **`StatusBanner` ahora también reacciona a `fall`**, no solo a `sos` —
+  quedaba pendiente de la sesión anterior, ya cerrado.
+- **Revisión de código completa** (agente dedicado + fixes aplicados):
+  import muerto en `ConnectedFooter.js`, estilos `aiTitle`/`aiBody`/
+  `aiError` sin uso (sobrantes de la tarjeta de IA deshabilitada), y un
+  bug real de UX: el perfil de Nacho mostraba "Resumen diario con IA"
+  con tag "Activas" igual que las notificaciones que sí funcionan —
+  ahora dice "Próximamente" para no confundir. Nada más encontrado:
+  `useAlerts` siempre inicializa en array (nunca `null`/`undefined`), sin
+  referencias viejas a CartoDB ni a `useSafeZone` singular.
+- **Build final "preview" para el sábado**: ver link vigente en
+  `APK_ACTUAL.md` una vez generado — este es standalone, no depende de
+  la compu ni de Metro, es el que corresponde instalar en el celu real
+  de mamá.
+
 **Ideas a futuro (sin priorizar, criterio: innovadora pero no compleja):**
 - Recordatorio de medicación (horarios + checklist diario).
 - ~~Detección de caída automática vía acelerómetro del celu.~~ ✅ hecho.
@@ -371,4 +392,8 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
 - Detección de caída en background (necesitaría investigar alternativas
   a expo-sensors, o un módulo nativo custom — hoy solo anda con la app
   abierta).
-- Que `StatusBanner` también se ponga en rojo ante un `fall`, no solo `sos`.
+- ~~Que `StatusBanner` también se ponga en rojo ante un `fall`.~~ ✅ hecho.
+- Botón "Resuelto" que además silencie notificaciones por un rato (no
+  solo limpiar el cartel) — evaluado, es más complejo (necesita un
+  estado de "silenciado hasta tal hora"), quedó descartado por ahora,
+  Nacho prefirió dejarlo simple.
