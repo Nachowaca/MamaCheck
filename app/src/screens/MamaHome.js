@@ -10,6 +10,11 @@ import ExitButton from "../components/ExitButton";
 import GlowText from "../components/GlowText";
 import { Button } from "../components/common";
 
+function todayLabel() {
+  const d = new Date().toLocaleDateString("es-UY", { day: "numeric", month: "long", year: "numeric" });
+  return d.charAt(0).toUpperCase() + d.slice(1);
+}
+
 function greeting() {
   const h = new Date().getHours();
   return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
@@ -78,6 +83,7 @@ export default function MamaHome() {
 
       <GlowText style={styles.footer}>Tu familia puede ver que estás bien</GlowText>
       <GlowText style={styles.credit}>App creada por Nacho ❤️</GlowText>
+      <Text style={styles.date}>{todayLabel()}</Text>
 
       {sosOpen && (
         <Dialog>
@@ -135,7 +141,7 @@ function Dialog({ children }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: C.bg, alignItems: "center", padding: 24, gap: 22 },
+  container: { flexGrow: 1, backgroundColor: C.bg, alignItems: "center", padding: 24, paddingBottom: 64, gap: 22 },
   header: { width: "100%", flexDirection: "row", justifyContent: "flex-end" },
   greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center" },
   checkinBtn: {
@@ -164,6 +170,7 @@ const styles = StyleSheet.create({
   sosBtn: { width: "100%", height: 52 },
   footer: { fontSize: 14, color: "#ffffff", fontWeight: "600", textAlign: "center" },
   credit: { fontSize: 12, color: "#ffffff", fontWeight: "500", textAlign: "center" },
+  date: { fontSize: 11, color: C.text, opacity: 0.45, textAlign: "center" },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 380, backgroundColor: C.surface, borderRadius: radiusLg, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
