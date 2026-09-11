@@ -9,7 +9,7 @@ const NOTIFICATIONS = [
   "Resumen diario con IA",
 ];
 
-export default function ProfileScreen({ onBack, mama }) {
+export default function ProfileScreen({ onBack, mama, hasActiveEmergency, onResolve }) {
   const { profile, session, signOut } = useAuth();
 
   return (
@@ -57,6 +57,12 @@ export default function ProfileScreen({ onBack, mama }) {
           ))}
         </View>
       </View>
+
+      {hasActiveEmergency && (
+        <Button variant="ghostDanger" onDark onPress={onResolve}>
+          Resuelto — todo en orden
+        </Button>
+      )}
 
       <Button variant="secondary" onDark onPress={signOut}>
         Cerrar sesión

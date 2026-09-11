@@ -61,12 +61,20 @@ export default function CuidadorDashboard() {
   const [showProfile, setShowProfile] = useState(false);
 
   // El cartel de emergencia solo queda prendido mientras el ÚLTIMO evento
-  // sea un SOS — en cuanto mande cualquier otra cosa más nueva (un
-  // check-in, un aviso de zona), se considera resuelto.
-  const activeSos = alerts[0]?.type === "sos" ? alerts[0] : null;
+  // sea un SOS o una posible caída — en cuanto mande cualquier otra cosa
+  // más nueva (un check-in, un aviso de zona, o "Resuelto" desde el
+  // perfil), se considera resuelto.
+  const activeSos = ["sos", "fall"].includes(alerts[0]?.type) ? alerts[0] : null;
 
   if (showProfile) {
-    return <ProfileScreen onBack={() => setShowProfile(false)} mama={mama} />;
+    return (
+      <ProfileScreen
+        onBack={() => setShowProfile(false)}
+        mama={mama}
+        hasActiveEmergency={!!activeSos}
+        onResolve={() => sendAlert({ userId: profile?.id, type: "message", text: "Resuelto — todo en orden" })}
+      />
+    );
   }
 
   return (
