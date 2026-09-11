@@ -52,7 +52,7 @@ export default function MamaHome() {
   }, []);
 
   function checkIn() {
-    setCheckInNote(isDaytime() ? "Disfruta tu día, te queremos!" : "Avisamos a tu familia recién ahora");
+    setCheckInNote(isDaytime() ? "Disfruta tu día, te queremos!" : "Que tengas buen descanso");
     sendAlert({ userId: session?.user?.id, type: "checkin", text: 'Check-in: "Estoy bien"' });
     scheduleCheckinReminder().catch((e) => console.warn("checkin reminder:", e?.message ?? e));
   }
