@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Animated, StyleSheet, Text } from "react-native";
+import { Animated, StyleSheet } from "react-native";
 import { radiusMd } from "../theme/colors";
 
 function isToday(date) {

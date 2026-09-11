@@ -4,9 +4,9 @@ import { useAuth } from "../lib/AuthContext";
 import { Card, Tag, Button } from "../components/common";
 
 const NOTIFICATIONS = [
-  "Alertas de caída o inactividad",
-  "Salida de zona segura",
-  "Resumen diario con IA",
+  { label: "Alertas de caída o inactividad", active: true },
+  { label: "Salida de zona segura", active: true },
+  { label: "Resumen diario con IA", active: false },
 ];
 
 export default function ProfileScreen({ onBack, mama, hasActiveEmergency, onResolve }) {
@@ -49,10 +49,10 @@ export default function ProfileScreen({ onBack, mama, hasActiveEmergency, onReso
       <View>
         <Text style={styles.sectionTitle}>Notificaciones</Text>
         <View style={{ gap: 8 }}>
-          {NOTIFICATIONS.map((t) => (
-            <Card key={t} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 14 }}>
-              <Text style={{ color: C.textCard, fontSize: 13 }}>{t}</Text>
-              <Tag variant="outline">Activas</Tag>
+          {NOTIFICATIONS.map((n) => (
+            <Card key={n.label} style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 14 }}>
+              <Text style={{ color: C.textCard, fontSize: 13 }}>{n.label}</Text>
+              <Tag variant={n.active ? "outline" : "neutral"}>{n.active ? "Activas" : "Próximamente"}</Tag>
             </Card>
           ))}
         </View>
