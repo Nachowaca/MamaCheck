@@ -18,9 +18,36 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
   .leaflet-control-zoom a:first-child{border-top-left-radius:10px!important;border-top-right-radius:10px!important}
   .leaflet-control-zoom a:last-child{border-bottom-left-radius:10px!important;border-bottom-right-radius:10px!important}
   .zone-label{font-size:11px;font-weight:600;color:${accent};background:rgba(243,245,254,0.9);padding:1px 6px;border-radius:8px;white-space:nowrap}
+  #pan-pad{
+    position:absolute;left:10px;bottom:10px;z-index:1000;
+    width:96px;height:96px;
+    display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr 1fr;
+    gap:2px;
+  }
+  #pan-pad button{
+    grid-column:auto;border:none;border-radius:8px;background:#f3f5feee;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;
+    padding:0;cursor:pointer;
+  }
+  #pan-pad button:active{background:${accent}33}
+  #pan-up{grid-column:2;grid-row:1}
+  #pan-left{grid-column:1;grid-row:2}
+  #pan-right{grid-column:3;grid-row:2}
+  #pan-down{grid-column:2;grid-row:3}
+  .pan-arrow{width:0;height:0;border:7px solid transparent}
+  #pan-up .pan-arrow{border-bottom-color:${accent};margin-bottom:3px}
+  #pan-down .pan-arrow{border-top-color:${accent};margin-top:3px}
+  #pan-left .pan-arrow{border-right-color:${accent};margin-right:3px}
+  #pan-right .pan-arrow{border-left-color:${accent};margin-left:3px}
 </style>
 </head><body>
 <div id="map"></div>
+<div id="pan-pad">
+  <button id="pan-up"><div class="pan-arrow"></div></button>
+  <button id="pan-left"><div class="pan-arrow"></div></button>
+  <button id="pan-right"><div class="pan-arrow"></div></button>
+  <button id="pan-down"><div class="pan-arrow"></div></button>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script>
   var zones = ${JSON.stringify(zones)};
@@ -75,6 +102,14 @@ const HTML = (lat, lng, zones, accent, safeColor, dangerColor) => `
   } else {
     map.setView([${lat}, ${lng}], 16);
   }
+
+  // Cruz de flechas para mover el mapa sin depender del touch/drag
+  // (arrastrar dentro del WebView compite con el scroll de la pantalla).
+  var PAN_STEP = 80;
+  document.getElementById('pan-up').addEventListener('click', function () { map.panBy([0, -PAN_STEP]); });
+  document.getElementById('pan-down').addEventListener('click', function () { map.panBy([0, PAN_STEP]); });
+  document.getElementById('pan-left').addEventListener('click', function () { map.panBy([-PAN_STEP, 0]); });
+  document.getElementById('pan-right').addEventListener('click', function () { map.panBy([PAN_STEP, 0]); });
 
   document.addEventListener('message', handleMessage);
   window.addEventListener('message', handleMessage);
