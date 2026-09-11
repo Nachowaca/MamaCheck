@@ -184,10 +184,11 @@ diseño/producto, no lo pises.
   sin pedirle mail ni contraseña. Trade-off aceptado: esa contraseña queda en
   el bundle de la app, no es un secreto real — razonable para este uso
   (su celu, app familiar de 2 personas). Esto es permanente, para siempre.
-- Login de Nacho también automático **por ahora, temporal** (mismo mecanismo,
-  `EXPO_PUBLIC_NACHO_EMAIL`/`EXPO_PUBLIC_NACHO_PASSWORD`) — solo para probar
-  más rápido durante esta etapa. Sacar esas dos líneas de `app/.env` (o vaciar
-  su valor) cuando se quiera que vuelva a pedir mail+contraseña o Google.
+- Login de Nacho también automático — **decisión permanente (2026-09-10),
+  ya no temporal**: mismo mecanismo que mamá (`EXPO_PUBLIC_NACHO_EMAIL`/
+  `EXPO_PUBLIC_NACHO_PASSWORD` en `app/.env`), entra directo tocando "Soy
+  Nacho" y la sesión queda guardada para siempre (solo se pierde si toca
+  "Salir").
 - Detalles de diseño en el login (2026-09-06): avatar propio para cada rol
   (`app/src/components/Avatars.js`, con `react-native-svg`) — uno neutro para
   Nacho, uno con pelo castaño y sonrisa para mamá; glow violeta suave en las

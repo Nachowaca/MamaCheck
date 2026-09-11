@@ -12,9 +12,9 @@ import { Button } from "../components/common";
 const MAMA_EMAIL = process.env.EXPO_PUBLIC_MAMA_EMAIL;
 const MAMA_PASSWORD = process.env.EXPO_PUBLIC_MAMA_PASSWORD;
 
-// TEMPORAL, solo para probar más rápido: "Soy Nacho" también entra directo
-// mientras iteramos, sin tipear cada vez. Sacar NACHO_EMAIL/PASSWORD de
-// app/.env cuando quieras que vuelva a pedir mail+contraseña (o Google).
+// Cuenta fija de Nacho: igual que mamá, "Soy Nacho" entra directo sin
+// escribir nada, y la sesión queda guardada para siempre en el celular
+// (solo pide de nuevo si se toca "Salir"). Decisión permanente, no temporal.
 const NACHO_EMAIL = process.env.EXPO_PUBLIC_NACHO_EMAIL;
 const NACHO_PASSWORD = process.env.EXPO_PUBLIC_NACHO_PASSWORD;
 
