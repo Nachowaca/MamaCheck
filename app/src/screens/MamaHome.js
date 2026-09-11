@@ -18,7 +18,7 @@ export default function MamaHome() {
   const { profile, session, signOut } = useAuth();
   const { contacts } = useContacts(profile?.household_id);
   const { sendAlert } = useAlerts(profile?.household_id);
-  const [checkInNote, setCheckInNote] = useState("Todavía no avisaste hoy");
+  const [checkInNote, setCheckInNote] = useState("Toca el círculo para activar el aviso");
   const [sosOpen, setSosOpen] = useState(false);
   const [sosSent, setSosSent] = useState(false);
 
@@ -61,7 +61,7 @@ export default function MamaHome() {
         <View style={styles.check} />
         <Text style={styles.checkinText}>Estoy bien</Text>
       </Pressable>
-      <Text style={styles.checkinNote}>{checkInNote}</Text>
+      <GlowText style={styles.checkinNote} color={C.accent}>{checkInNote}</GlowText>
 
       <View style={{ width: "100%", gap: 8 }}>
         {contacts.map((c) => (
