@@ -95,7 +95,7 @@ export async function startBackgroundLocation() {
 
   await Location.startLocationUpdatesAsync(LOCATION_TASK, {
     accuracy: Location.Accuracy.Balanced,
-    timeInterval: 90 * 1000,
+    timeInterval: 4 * 60 * 1000,
     distanceInterval: 30,
     showsBackgroundLocationIndicator: false,
     foregroundService: {
