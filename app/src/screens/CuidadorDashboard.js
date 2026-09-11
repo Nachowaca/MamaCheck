@@ -15,6 +15,35 @@ const QUICK_MESSAGES = [
   "Recuerda abrir la app",
 ];
 
+function BatteryCard({ mama }) {
+  const level = mama?.battery_level;
+  const charging = mama?.battery_charging;
+
+  let color = C.accentText;
+  let statusText = "Todavía no tenemos datos de su batería";
+  if (level != null) {
+    color = level <= 20 ? C.dangerTextOnLight : level <= 40 ? "#b38600" : "#2f9e58";
+    statusText = `${level}%${charging ? " · cargando" : ""}`;
+  }
+
+  return (
+    <Card style={{ gap: 8 }}>
+      <Text style={styles.aiLabel}>Batería de mamá</Text>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <View style={[styles.batteryShell, { borderColor: color }]}>
+          <View
+            style={[
+              styles.batteryFill,
+              { backgroundColor: color, width: level != null ? `${Math.max(level, 4)}%` : "6%" },
+            ]}
+          />
+        </View>
+        <Text style={[styles.batteryText, { color }]}>{statusText}</Text>
+      </View>
+    </Card>
+  );
+}
+
 export default function CuidadorDashboard() {
   const { profile, signOut } = useAuth();
   const householdId = profile?.household_id;
@@ -61,13 +90,7 @@ export default function CuidadorDashboard() {
         zones={zones}
       />
 
-      <Card style={{ gap: 10 }}>
-        <Text style={styles.aiLabel}>Análisis de IA</Text>
-        <Text style={styles.aiBody}>Generar estará habilitado en versiones futuras.</Text>
-        <Button variant="secondary" disabled>
-          Generar
-        </Button>
-      </Card>
+      <BatteryCard mama={mama} />
 
       <View style={{ flexDirection: "row", gap: 10 }}>
         <Button variant="secondary" onDark style={{ flex: 1 }} onPress={() => setChatOpen(true)}>
@@ -144,6 +167,9 @@ const styles = StyleSheet.create({
   aiTitle: { color: C.textCard, fontSize: 15, fontWeight: "500" },
   aiBody: { color: C.textCardMuted, fontSize: 13 },
   aiError: { color: C.dangerTextOnLight, fontSize: 12 },
+  batteryShell: { flex: 1, height: 14, borderWidth: 1.5, borderRadius: 7, padding: 2, backgroundColor: C.surfaceAlt },
+  batteryFill: { height: "100%", borderRadius: 4 },
+  batteryText: { fontSize: 14, fontWeight: "600", minWidth: 96, textAlign: "right" },
   sectionTitle: { color: C.text, opacity: 0.7, fontSize: 13, marginBottom: 8 },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 440, backgroundColor: C.surface, borderRadius: 14, padding: 20, gap: 12 },

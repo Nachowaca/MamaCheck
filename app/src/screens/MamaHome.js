@@ -5,6 +5,7 @@ import { useAuth } from "../lib/AuthContext";
 import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
 import { scheduleCheckinReminder } from "../lib/pushNotifications";
+import { reportBatteryStatus } from "../lib/battery";
 import ExitButton from "../components/ExitButton";
 import GlowText from "../components/GlowText";
 import { Button } from "../components/common";
@@ -30,8 +31,10 @@ export default function MamaHome() {
     // Mientras el background no funcione en Expo Go: manda la ubicación real
     // apenas abre la app, y de nuevo cada 2 min mientras la tenga abierta.
     writeCurrentLocationOnce().catch((e) => console.warn("foreground location:", e?.message ?? e));
+    reportBatteryStatus();
     const interval = setInterval(() => {
       writeCurrentLocationOnce().catch((e) => console.warn("foreground location:", e?.message ?? e));
+      reportBatteryStatus();
     }, 2 * 60 * 1000);
     return () => clearInterval(interval);
   }, []);

@@ -18,6 +18,8 @@ create table profiles (
   email text,
   phone text,
   push_token text,
+  battery_level integer,
+  battery_charging boolean,
   created_at timestamptz not null default now()
 );
 
