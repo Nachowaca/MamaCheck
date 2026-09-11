@@ -21,7 +21,7 @@ function BatteryCard({ mama }) {
   const charging = mama?.battery_charging;
 
   let color = C.accentText;
-  let statusText = "Todavía no tenemos datos de su batería";
+  let statusText = "Sin datos aún";
   if (level != null) {
     color = level <= 20 ? C.dangerTextOnLight : level <= 40 ? "#b38600" : "#2f9e58";
     statusText = `${level}%${charging ? " · cargando" : ""}`;
@@ -55,7 +55,10 @@ export default function CuidadorDashboard() {
   const [chatOpen, setChatOpen] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  const lastSos = alerts.find((a) => a.type === "sos");
+  // El cartel de emergencia solo queda prendido mientras el ÚLTIMO evento
+  // sea un SOS — en cuanto mande cualquier otra cosa más nueva (un
+  // check-in, un aviso de zona), se considera resuelto.
+  const activeSos = alerts[0]?.type === "sos" ? alerts[0] : null;
 
   if (showProfile) {
     return <ProfileScreen onBack={() => setShowProfile(false)} mama={mama} />;
@@ -76,7 +79,7 @@ export default function CuidadorDashboard() {
         </View>
       </View>
 
-      <StatusBanner alert={lastSos} />
+      <StatusBanner alert={activeSos} />
 
       <OsmMap
         lat={mamaLocation?.lat ?? zones[0]?.lat}
@@ -158,9 +161,9 @@ const styles = StyleSheet.create({
   aiTitle: { color: C.textCard, fontSize: 15, fontWeight: "500" },
   aiBody: { color: C.textCardMuted, fontSize: 13 },
   aiError: { color: C.dangerTextOnLight, fontSize: 12 },
-  batteryShell: { flex: 1, height: 14, borderWidth: 1.5, borderRadius: 7, padding: 2, backgroundColor: C.surfaceAlt },
+  batteryShell: { width: 60, height: 14, borderWidth: 1.5, borderRadius: 7, padding: 2, backgroundColor: C.surfaceAlt },
   batteryFill: { height: "100%", borderRadius: 4 },
-  batteryText: { fontSize: 14, fontWeight: "600", minWidth: 96, textAlign: "right" },
+  batteryText: { fontSize: 13, fontWeight: "600" },
   sectionTitle: { color: C.text, opacity: 0.7, fontSize: 13, marginBottom: 8 },
   dialogOverlay: { position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(41,43,49,0.5)", alignItems: "center", justifyContent: "center", padding: 16 },
   dialogCard: { width: "100%", maxWidth: 440, backgroundColor: C.surface, borderRadius: 14, padding: 20, gap: 12 },
