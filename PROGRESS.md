@@ -324,11 +324,51 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
      botón sigue deshabilitado en la UI ("Generar estará habilitado en
      versiones futuras") hasta ese momento.
 
+## ✅ Sesión 2026-09-10/11 (noche) — detección de caída, mejoras de estado y SOS
+
+- **Detección de caída (accelerómetro), confirmada funcionando en el celu
+  real de Nacho.** `expo-sensors` nuevo, `src/lib/fallDetection.js`:
+  patrón caída libre (`<0.4g`) + impacto (`>2.5g`) en menos de 1s, cooldown
+  de 30s. Solo funciona con la app de mamá **abierta** — expo-sensors no
+  soporta background como sí lo hace expo-location. Nuevo tipo de alerta
+  `fall` (agregado al check constraint de `alerts.type`), mismo pipeline
+  de push que SOS. `StatusBanner` todavía NO reacciona a `fall` (solo a
+  `sos`) — pendiente si se quiere que también ponga el cartel en rojo.
+- **Botón "Necesito ayuda" de mamá**: se achicó y centró (antes ocupaba
+  todo el ancho) para reducir toques accidentales.
+- **Mensajes de check-in según hora del día**: de día "Disfruta tu día,
+  te queremos!", de noche "Que tengas buen descanso" (antes siempre el
+  mismo texto genérico).
+- **Cartel "Conectado a MamaCheck!" ahora es real, no decorativo**: usa
+  `mamaLocation.recorded_at` (¿escribió algo hoy?) + `battery_level`
+  (¿no está en 0?) para decidir "Conectado" vs "No conectados". Se
+  actualiza solo cada 5 min aunque no llegue dato nuevo.
+- **Batería de mamá ahora es en tiempo real**: se agregó `profiles` a la
+  publicación de Realtime de Supabase y `useOtherProfile` se suscribe a
+  cambios — confirmado con una prueba real (PATCH directo a la fila,
+  cambió en pantalla sin recargar).
+- **`locations` con auto-limpieza** (trigger, borra >10 días) y frecuencia
+  de guardado bajada de 90s/2min a 4min — bajaron mucho el volumen de
+  filas sin perder utilidad real para el mapa.
+- **Análisis de IA con Claude — desplegado y probado, en stand-by por
+  crédito** (ver detalle arriba, sección "en pausa, a mitad de camino").
+- Varios detalles de UI menores: zoom +/- y cruz de flechas para mover el
+  mapa a mano (WebView + ScrollView competían por el drag), botón
+  "Volver" del perfil movido a pill arriba a la derecha (chocaba con la
+  barra de estado), créditos "App creada por Nacho ❤️" + fecha al pie de
+  las dos pantallas, círculo de check-in de mamá pasado a verde brillante.
+
 **Ideas a futuro (sin priorizar, criterio: innovadora pero no compleja):**
 - Recordatorio de medicación (horarios + checklist diario).
-- Detección de caída automática vía acelerómetro del celu.
-- Alerta de batería baja del celu de mamá al cuidador.
+- ~~Detección de caída automática vía acelerómetro del celu.~~ ✅ hecho.
+- ~~Alerta de batería baja del celu de mamá al cuidador.~~ dato disponible
+  y en tiempo real — falta la alerta automática en sí (push si baja de
+  15-20%), no está armada todavía.
 - Multi-cuidador — hoy el modelo asume exactamente 2 personas por household.
 - Accesibilidad para mamá — texto más grande, alto contraste, botones simples.
 - Botón SOS con opción de llamar directo a emergencias.
 - Modo "no molestar" — silenciar notificaciones de noche salvo SOS.
+- Detección de caída en background (necesitaría investigar alternativas
+  a expo-sensors, o un módulo nativo custom — hoy solo anda con la app
+  abierta).
+- Que `StatusBanner` también se ponga en rojo ante un `fall`, no solo `sos`.
