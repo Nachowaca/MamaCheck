@@ -310,8 +310,19 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
      Deploy, y cargar el secret `ANTHROPIC_API_KEY` (Nacho ya tiene la key,
      falta cargarla — quiere entender mejor qué es antes de hacerlo, tiene
      sentido no apurarlo).
-   - Cuando se retome: solo falta desplegar + cargar el secret y probar el
-     botón — el resto (código app y función) ya está.
+   - **Actualización 2026-09-10: técnicamente listo, en stand-by por
+     crédito.** Función desplegada en Supabase, `ANTHROPIC_API_KEY` cargada
+     como secret (con `.trim()` agregado al leerla — el primer intento
+     falló con "not a valid ByteString" por un espacio/salto de línea de
+     más al pegarla, común al copiar keys). Probado con curl real: la key
+     es válida y Claude responde, pero la cuenta de Anthropic no tiene
+     crédito ("Your credit balance is too low"). **Importante:** Claude
+     Pro (claude.ai) y la API (console.anthropic.com) son facturaciones
+     separadas — tener Pro no da crédito de API. Falta cargar saldo en
+     console.anthropic.com → Plans & Billing cuando Nacho quiera retomar;
+     ahí el botón "Generar" queda 100% funcional sin tocar más código. El
+     botón sigue deshabilitado en la UI ("Generar estará habilitado en
+     versiones futuras") hasta ese momento.
 
 **Ideas a futuro (sin priorizar, criterio: innovadora pero no compleja):**
 - Recordatorio de medicación (horarios + checklist diario).
