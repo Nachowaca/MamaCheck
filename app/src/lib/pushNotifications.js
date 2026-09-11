@@ -40,9 +40,10 @@ export async function registerForPushToken() {
   if (status !== "granted") return "permiso no concedido: " + status;
 
   if (Platform.OS === "android") {
-    await Notifications.setNotificationChannelAsync("default", {
-      name: "default",
-      importance: Notifications.AndroidImportance.HIGH,
+    await Notifications.setNotificationChannelAsync("mamacheck-alerts", {
+      name: "Alertas de MamaCheck",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
     });
   }
 
@@ -75,6 +76,7 @@ export async function scheduleCheckinReminder() {
       title: "¿Estás bien?",
       body: "Abrí MamaCheck y avisale a tu familia que estás bien.",
       sound: "default",
+      android: { channelId: "mamacheck-alerts", priority: "max" },
     },
     trigger: { seconds: 6 * 60 * 60, repeats: true },
   });
@@ -94,7 +96,7 @@ export async function sendPushTo(pushToken, title, body) {
     await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ to: pushToken, title, body, sound: "default" }),
+      body: JSON.stringify({ to: pushToken, title, body, sound: "default", priority: "high", channelId: "mamacheck-alerts" }),
     });
   } catch {
     // sin conexión o falla puntual: no bloquea el resto del flujo
