@@ -10,6 +10,8 @@ import ExitButton from "../components/ExitButton";
 import GlowText from "../components/GlowText";
 import { Button } from "../components/common";
 
+const CHECKIN_GREEN = "#4cd97b";
+
 function todayLabel() {
   const d = new Date().toLocaleDateString("es-UY", { day: "numeric", month: "long", year: "numeric" });
   return d.charAt(0).toUpperCase() + d.slice(1);
@@ -146,16 +148,16 @@ const styles = StyleSheet.create({
   greeting: { fontSize: 22, fontWeight: "500", color: C.text, textAlign: "center" },
   checkinBtn: {
     width: 220, height: 220, borderRadius: 110,
-    borderWidth: 1.5, borderColor: C.accent,
+    borderWidth: 1.5, borderColor: CHECKIN_GREEN,
     alignItems: "center", justifyContent: "center", gap: 10,
-    shadowColor: C.accent,
-    shadowOpacity: 0.6,
-    shadowRadius: 18,
+    shadowColor: CHECKIN_GREEN,
+    shadowOpacity: 0.8,
+    shadowRadius: 22,
     shadowOffset: { width: 0, height: 0 },
-    elevation: 8,
+    elevation: 10,
   },
-  check: { width: 34, height: 18, borderLeftWidth: 3, borderBottomWidth: 3, borderColor: C.accent, transform: [{ rotate: "-45deg" }], marginBottom: 4 },
-  checkinText: { color: C.accent, fontWeight: "500", fontSize: 22 },
+  check: { width: 34, height: 18, borderLeftWidth: 3, borderBottomWidth: 3, borderColor: CHECKIN_GREEN, transform: [{ rotate: "-45deg" }], marginBottom: 4 },
+  checkinText: { color: CHECKIN_GREEN, fontWeight: "500", fontSize: 22 },
   checkinNote: { fontSize: 16, color: C.text, opacity: 0.7 },
   contactRow: {
     flexDirection: "row", alignItems: "center", gap: 12, width: "100%",
