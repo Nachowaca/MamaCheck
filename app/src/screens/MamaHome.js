@@ -54,7 +54,7 @@ export default function MamaHome() {
         <ExitButton onPress={signOut} />
       </View>
       <Text style={styles.greeting}>
-        {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]}
+        {greeting()}, {profile?.name ?? session?.user?.email?.split("@")[0]} 😊
       </Text>
 
       <Pressable onPress={checkIn} style={styles.checkinBtn}>
