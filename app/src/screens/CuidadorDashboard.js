@@ -16,6 +16,11 @@ const QUICK_MESSAGES = [
   "Recuerda abrir la app",
 ];
 
+function todayLabel() {
+  const d = new Date().toLocaleDateString("es-UY", { day: "numeric", month: "long", year: "numeric" });
+  return d.charAt(0).toUpperCase() + d.slice(1);
+}
+
 function BatteryCard({ mama }) {
   const level = mama?.battery_level;
   const charging = mama?.battery_charging;
@@ -122,6 +127,9 @@ export default function CuidadorDashboard() {
 
       <ConnectedFooter />
 
+      <Text style={styles.date}>{todayLabel()}</Text>
+      <Text style={styles.credit}>App creada por Nacho</Text>
+
       {chatOpen && (
         <View style={styles.dialogOverlay}>
           <View style={styles.dialogCard}>
@@ -152,7 +160,7 @@ export default function CuidadorDashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flexGrow: 1, backgroundColor: C.bg, padding: 16, gap: 14 },
+  container: { flexGrow: 1, backgroundColor: C.bg, padding: 16, paddingBottom: 32, gap: 14 },
   header: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   hello: { fontSize: 12, color: C.text, opacity: 0.6 },
   name: { fontSize: 20, fontWeight: "500", color: C.text },
@@ -169,4 +177,6 @@ const styles = StyleSheet.create({
   dialogCard: { width: "100%", maxWidth: 440, backgroundColor: C.surface, borderRadius: 14, padding: 20, gap: 12 },
   dialogTitle: { fontSize: 20, fontWeight: "500", color: C.textCard },
   dialogBody: { fontSize: 14, color: C.textCardMuted },
+  date: { fontSize: 11, color: C.text, opacity: 0.45, textAlign: "center" },
+  credit: { fontSize: 12, color: "#ffffff", fontWeight: "500", textAlign: "center" },
 });
