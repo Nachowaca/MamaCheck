@@ -3,7 +3,7 @@
 // La API key de Anthropic vive acá como secret, nunca en la app.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.115.0";
 
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY")?.trim();
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 
