@@ -43,6 +43,25 @@ create table locations (
 );
 create index locations_household_recorded_idx on locations (household_id, recorded_at desc);
 
+-- Auto-limpieza: al guardar una ubicación nueva, borra las de esa misma
+-- household con más de 10 días. Sin mantenimiento, sin extensiones extra
+-- (pg_cron) — la tabla se auto-poda sola con el uso normal.
+create or replace function cleanup_old_locations()
+returns trigger
+language plpgsql
+as $$
+begin
+  delete from locations
+  where household_id = new.household_id
+    and recorded_at < now() - interval '10 days';
+  return new;
+end;
+$$;
+
+create trigger trg_cleanup_old_locations
+  after insert on locations
+  for each row execute function cleanup_old_locations();
+
 create table contacts (
   id uuid primary key default gen_random_uuid(),
   household_id uuid not null references households(id) on delete cascade,
