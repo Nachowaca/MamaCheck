@@ -106,6 +106,48 @@ la próxima vez que Nacho tenga su celular a mano.
 **Pendiente sigue siendo lo mismo de siempre**: instalar en el celu de
 mamá + probar SOS de punta a punta — ver `PLAN_OFICIAL.md` sección 1.
 
+## ✅ Sesión 2026-09-10/11 — batería, estado del mapa, UI y login real de Nacho
+
+- **Batería de mamá reemplaza la tarjeta de Análisis de IA** (esa seguía
+  sin desplegar, igual estaba deshabilitada). Nuevo `app/src/lib/battery.js`
+  (`reportBatteryStatus`, usa `expo-battery`) llamado desde `MamaHome.js`
+  junto con la ubicación (al abrir + cada 2 min). Nuevas columnas
+  `battery_level`/`battery_charging` en `profiles`. `CuidadorDashboard.js`
+  muestra una barra chica verde/amarilla/roja según el nivel. **Confirmado
+  funcionando en el celu real de Nacho: 99%.**
+- **Cartel de estado arriba del mapa** (`StatusBanner.js`, nuevo): antes
+  solo aparecía un banner cuando había un SOS y quedaba prendido para
+  siempre (bug — el `find` agarraba cualquier SOS viejo dentro de los
+  últimos 4 avisos). Ahora: verde "Todo en orden" en reposo, rojo con glow
+  animado **solo si el último evento es un SOS** — cualquier check-in o
+  aviso de zona más nuevo lo apaga solo.
+- **Mensajes rápidos** cambiados a los 3 pedidos por Nacho.
+- **Footer "Conectado a MamaCheck!"** con glow amarillo animado
+  (`ConnectedFooter.js`), da aire real al final del scroll del dashboard.
+- **`GlowText.js`** (nuevo, reusable): mismo patrón de animación aplicado
+  también al texto de "Tu familia puede ver que estás bien" (blanco) y al
+  texto de instrucción del check-in de mamá (violeta), que además se
+  reescribió a "Toca el círculo para activar el aviso".
+- **Mapa**: zoom +/- habilitado y restyleado (antes estaba oculto del
+  todo), altura default subida 220→300.
+- **Botón "Volver" del perfil**: estaba como texto plano pegado arriba
+  del todo, chocando con la barra de estado del celu real. Ahora es un
+  botón pill arriba a la derecha con padding extra.
+- **Login de Nacho, decisión final**: contraseña real cambiada a la que
+  usa siempre (no la de prueba) — actualizada en Supabase Auth (vía REST,
+  sign-in con la vieja + `PUT /auth/v1/user`), en `app/.env` y en las EAS
+  env vars de `preview`/`development`. Queda permanente, igual que mamá
+  (ver comentario actualizado en `LoginGate.js`).
+- **`expo-battery` instalado** — primer módulo nativo nuevo desde el
+  primer dev build, así que hizo falta un build nuevo (no alcanza con
+  Metro) para que tome efecto.
+
+**Al retomar:** si Nacho arrancó un dev build ("MamaCheck V1") para seguir
+iterando en vivo antes de armar el preview final del sábado, revisar acá
+si ya terminó y si la instaló. El build final de "preview" para el uso
+real con mamá tiene que juntar TODOS los cambios de esta sesión antes de
+mandarlo — no mandar un preview parcial.
+
 Historia completa de la vuelta anterior de debugging (ya resuelta, dejar
 para contexto):
 

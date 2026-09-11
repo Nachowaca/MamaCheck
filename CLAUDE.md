@@ -104,3 +104,49 @@ production use.
 `expo-task-manager`) does not run inside Expo Go — Expo dropped background
 location support there. It needs an EAS dev build before it can be tested
 for real; see `PROGRESS.md` for where that sits in the plan.
+
+## Current state (as of 2026-09-10, check PROGRESS.md for anything newer)
+
+**Supabase is real and live**, not mock — `supabaseReady` is `true` in
+practice for this project. The mock/real split described above still
+matters as a *pattern* (any new Supabase-backed hook should still fall
+back to `mockData.js`), but don't assume the app is currently running in
+mock mode when reasoning about a bug someone reports from their phone.
+
+**Two EAS build profiles, easy to conflate:**
+- `development` — needs `npx expo start` (Metro) running on the same wifi
+  to load JS. Used for live-iterating during a session.
+- `preview` — standalone, JS baked in at build time, no Metro needed. This
+  is what's actually installed on Nacho's and mamá's phones for real use.
+  **A JS-only code change does NOT appear in an already-installed
+  `preview` APK — it needs a brand-new `preview` build.** Don't tell Nacho
+  "just reload the app" for a `preview`-build change.
+- Both profiles need every `EXPO_PUBLIC_*` var (and `GOOGLE_SERVICES_JSON`)
+  pushed as an EAS environment variable (`eas env:create`/`env:set`) — EAS
+  Build never reads the local gitignored `app/.env` directly. See
+  `INSTALADOR.md` for the full story and the exact commands. When
+  `app/.env` changes (e.g. Nacho's login password), mirror it into EAS for
+  both `preview` and `development` or the next build silently reverts.
+
+**`useSafeZones`** (plural) is the real hook name in
+`useHouseholdData.js` — returns *all* safe-zone rows for the household,
+not just one. `OsmMap.js` draws one labeled circle per zone and colors
+mamá's marker green/red client-side via the same haversine check
+`locationTask.js` uses server-side.
+
+**No safe-area handling anywhere** (`react-native-safe-area-context` isn't
+installed, no `SafeAreaView`/insets used). Screens just use a top padding
+number tuned by eye against a real device (see `ProfileScreen.js`'s
+`paddingTop: 44` for its back button, added after it collided with the
+status bar). If another screen's header/back button reports the same
+issue, it's this — bump that screen's top padding, don't assume it's an
+isolated bug.
+
+**Battery reporting** (`src/lib/battery.js`, `expo-battery`): mamá's app
+calls `reportBatteryStatus()` alongside her location pings (on open + every
+2 min), writing `battery_level`/`battery_charging` onto her `profiles` row.
+`CuidadorDashboard.js`'s `BatteryCard` reads it off `useOtherProfile`. This
+was the first native module added since the first dev build — adding a
+new native module always means the *next* build (any profile) needs to be
+regenerated before it works; Metro alone can't add native code to an
+already-installed binary.
