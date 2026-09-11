@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   contactNote: { fontSize: 14, color: C.textCardMuted },
   callBtn: { width: 36, height: 36, borderRadius: radiusMd, borderWidth: 1, borderColor: C.cardDivider, alignItems: "center", justifyContent: "center" },
   callIcon: { width: 16, height: 16, borderRadius: 8, borderWidth: 1.6, borderColor: C.textCard },
-  sosBtn: { width: "100%", height: 52 },
+  sosBtn: { width: 190, height: 44, alignSelf: "center" },
   footer: { fontSize: 14, color: "#ffffff", fontWeight: "600", textAlign: "center" },
   credit: { fontSize: 12, color: "#ffffff", fontWeight: "500", textAlign: "center" },
   date: { fontSize: 11, color: C.text, opacity: 0.45, textAlign: "center" },
