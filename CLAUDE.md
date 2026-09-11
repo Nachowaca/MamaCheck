@@ -150,3 +150,40 @@ was the first native module added since the first dev build — adding a
 new native module always means the *next* build (any profile) needs to be
 regenerated before it works; Metro alone can't add native code to an
 already-installed binary.
+
+**Fall detection** (`src/lib/fallDetection.js`, `expo-sensors`
+`Accelerometer`): free-fall (`magnitude < FREE_FALL_G`) followed within
+`IMPACT_WINDOW_MS` by a spike (`magnitude >= IMPACT_G`), with a cooldown
+so one fall doesn't fire twice. Foreground-only — `expo-sensors` has no
+background task support like `expo-location` does, so this only runs
+while mamá's app is open. Thresholds were originally tuned for a hard-
+floor impact (2.5g) and failed a real test (phone tossed onto a couch —
+soft landing, much lower peak g); loosened to `0.55g`/`1.8g` after
+calibrating with a temporary `console.log` of the rolling peak magnitude,
+read live from the Metro output in the Claude Code terminal while Nacho
+reproduced the drop on the dev build. **That calibration method is the
+playbook if thresholds ever need retuning again** — don't guess new
+numbers blind, add the temporary peak-logger back (see git history around
+commit `06cae03` for the exact shape), get one real data point, then
+remove the debug log before committing the real fix.
+
+## Working with Nacho — patterns that hold across sessions
+
+- He tests everything live on his own phone against a **dev build**
+  (`npx expo start` + a `development`-profile APK already installed) while
+  a feature is being iterated on, then asks for a fresh **`preview`**
+  build once he's confirmed it works — that's the one that actually ships
+  to his phone and his mother's. Don't skip straight to a `preview` build
+  for something untested.
+- He reports problems by describing what he *did* and what *didn't*
+  happen ("tiré el celu al sillón y no detectó nada"), not by reading
+  error messages — when something's wrong, the fastest path is usually to
+  reproduce it and instrument it (temporary logging, a debug Alert) rather
+  than reasoning about it purely from the code.
+- Prefers short, direct SQL/commands handed to him to paste into the
+  Supabase dashboard himself — he runs them and confirms back, rather
+  than being walked through the dashboard UI step by step unless he asks.
+- Always wants `PROGRESS.md` (and `APK_ACTUAL.md` when a build link
+  changes) updated before a session winds down, even mid-task — treat "go
+  guardá el progreso" as a real request to write state to disk, not just
+  a conversational aside.

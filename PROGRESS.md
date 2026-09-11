@@ -397,3 +397,33 @@ es lo que le da sentido práctico al mapa, más que el punto solo.
   solo limpiar el cartel) — evaluado, es más complejo (necesita un
   estado de "silenciado hasta tal hora"), quedó descartado por ahora,
   Nacho prefirió dejarlo simple.
+
+## 🔴 Sesión 2026-09-11 (madrugada) — fix de calibración, retomar acá
+
+**Bug real encontrado probando con Nacho:** tiró el celu contra un sillón
+para simular una caída y no detectó nada. Los umbrales originales
+(`FREE_FALL_G 0.4` / `IMPACT_G 2.5`, ver `src/lib/fallDetection.js`)
+estaban pensados para un golpe seco contra el piso — un sillón amortigua
+mucho, el pico de fuerza queda muy por debajo de 2.5g.
+
+**Fix aplicado y confirmado funcionando** (con un log temporal de
+calibración que ya se sacó): `FREE_FALL_G` bajado a `0.55`, `IMPACT_G`
+bajado a `1.8`, ventana de impacto subida de 1000ms a 1200ms. Nacho probó
+de nuevo después del cambio y sí detectó la caída.
+
+**🔴 Pendiente antes del sábado — no instalar el build viejo:**
+El build "preview" final que se había armado antes de este fix
+(`39900129-...`, referenciado en un `APK_ACTUAL.md` anterior) tiene los
+umbrales VIEJOS que no detectaban nada. **Hay que generar un preview
+nuevo** con el fix ya commiteado (`06cae03`) antes de instalar en el
+celu de mamá. Al retomar: lanzar `eas build --profile preview`, esperar,
+actualizar `APK_ACTUAL.md` con el link nuevo, y solo ahí queda listo.
+
+**Si vuelve a fallar la detección** (con estos umbrales más sueltos):
+el patrón para recalibrar rápido es agregar de nuevo un log temporal de
+"pico de magnitud cada 3s" en `fallDetection.js` (mismo truco que se usó
+acá — ver el diff del commit `06cae03` como referencia de cómo se hizo),
+pedirle a Nacho que reproduzca la caída con el dev build + Metro
+corriendo, y leer los picos reales en la salida de Metro (queda visible
+en la terminal de Claude Code, no hace falta nada especial del lado del
+celu) antes de mover los números a ciegas.
