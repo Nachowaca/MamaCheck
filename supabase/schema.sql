@@ -76,7 +76,7 @@ create table alerts (
   id uuid primary key default gen_random_uuid(),
   household_id uuid not null references households(id) on delete cascade,
   user_id uuid not null references profiles(id) on delete cascade,
-  type text not null check (type in ('checkin', 'sos', 'zone_exit', 'zone_enter', 'message')),
+  type text not null check (type in ('checkin', 'sos', 'zone_exit', 'zone_enter', 'message', 'fall')),
   text text not null,
   created_at timestamptz not null default now()
 );

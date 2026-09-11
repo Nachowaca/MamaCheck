@@ -6,6 +6,7 @@ import { useContacts, useAlerts } from "../hooks/useHouseholdData";
 import { startBackgroundLocation, writeCurrentLocationOnce } from "../lib/locationTask";
 import { scheduleCheckinReminder } from "../lib/pushNotifications";
 import { reportBatteryStatus } from "../lib/battery";
+import { startFallDetection } from "../lib/fallDetection";
 import ExitButton from "../components/ExitButton";
 import GlowText from "../components/GlowText";
 import { Button } from "../components/common";
@@ -48,7 +49,17 @@ export default function MamaHome() {
       writeCurrentLocationOnce().catch((e) => console.warn("foreground location:", e?.message ?? e));
       reportBatteryStatus();
     }, 4 * 60 * 1000);
-    return () => clearInterval(interval);
+
+    // Detección de caída: solo funciona con la app abierta (expo-sensors no
+    // corre en background) — ver PROGRESS.md para la limitación completa.
+    const stopFallDetection = startFallDetection(() => {
+      sendAlert({ userId: session?.user?.id, type: "fall", text: "Posible caída detectada" });
+    });
+
+    return () => {
+      clearInterval(interval);
+      stopFallDetection();
+    };
   }, []);
 
   function checkIn() {

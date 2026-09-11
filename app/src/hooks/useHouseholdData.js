@@ -9,6 +9,7 @@ const ALERT_TITLES = {
   zone_exit: "Salió de la zona segura",
   zone_enter: "Volvió a la zona segura",
   message: "Mensaje",
+  fall: "Posible caída",
 };
 
 export function useContacts(householdId) {
