@@ -9,9 +9,9 @@ import { Accelerometer } from "expo-sensors";
 // Limitación real: expo-sensors no soporta correr en background — a
 // diferencia de la ubicación (que sí tiene expo-task-manager), esto solo
 // funciona con la app abierta en el celu. Documentado en PROGRESS.md.
-const FREE_FALL_G = 0.4; // casi sin peso
-const IMPACT_G = 2.5; // golpe fuerte
-const IMPACT_WINDOW_MS = 1000; // el golpe tiene que venir poco después de la caída libre
+const FREE_FALL_G = 0.55; // casi sin peso (antes 0.4 — muy estricto)
+const IMPACT_G = 1.8; // golpe (antes 2.5 — pensado para piso duro, no un sillón)
+const IMPACT_WINDOW_MS = 1200; // el golpe tiene que venir poco después de la caída libre
 const COOLDOWN_MS = 30 * 1000; // no repetir avisos por el mismo golpe
 
 export function startFallDetection(onFallDetected) {
