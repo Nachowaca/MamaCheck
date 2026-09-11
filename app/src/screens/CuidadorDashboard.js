@@ -113,10 +113,19 @@ export default function CuidadorDashboard() {
         <View style={{ gap: 8 }}>
           {alerts.map((a) => (
             <Card key={a.id} style={{ flexDirection: "row", alignItems: "center", gap: 10, padding: 10 }}>
-              <Tag variant={a.type === "sos" ? "outline" : "neutral"}>
+              <Tag variant={a.type === "sos" || a.type === "fall" ? "outline" : "neutral"}>
                 {new Date(a.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
               </Tag>
-              <Text style={{ color: C.textCard, fontSize: 13, flex: 1 }}>{a.text}</Text>
+              <Text
+                style={{
+                  color: a.type === "fall" ? C.dangerTextOnLight : C.textCard,
+                  fontWeight: a.type === "fall" ? "700" : "400",
+                  fontSize: 13,
+                  flex: 1,
+                }}
+              >
+                {a.text}
+              </Text>
             </Card>
           ))}
           {alerts.length === 0 && (
