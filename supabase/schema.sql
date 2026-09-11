@@ -83,7 +83,7 @@ create table alerts (
 create index alerts_household_created_idx on alerts (household_id, created_at desc);
 
 -- Realtime: publicar las tablas que el dashboard del cuidador escucha en vivo
-alter publication supabase_realtime add table locations, alerts;
+alter publication supabase_realtime add table locations, alerts, profiles;
 
 -- ---------- RLS ----------
 alter table households enable row level security;

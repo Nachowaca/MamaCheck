@@ -132,6 +132,23 @@ export function useOtherProfile(householdId, role) {
       .limit(1)
       .single()
       .then(({ data }) => data && setOther(data));
+
+    // Realtime: batería/push_token/etc. del otro perfil se actualizan solos
+    // en pantalla (ej. Nacho viendo la batería de mamá) sin recargar.
+    const channel = supabase
+      .channel(`profile-${householdId}-${role}`)
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "profiles", filter: `household_id=eq.${householdId}` },
+        (payload) => {
+          if (payload.new.role === role) setOther(payload.new);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [householdId, role]);
   return other;
 }
