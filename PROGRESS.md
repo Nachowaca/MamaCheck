@@ -455,3 +455,13 @@ nuevo** para que se auto-corrija en el celu real de Nacho. Se puede sumar al
 mismo build pendiente del fix de calibración de caída (`06cae03`) — no
 generar dos builds separados, juntar todo en el próximo `eas build --profile
 preview`.
+
+**🔴 Bloqueado (2026-09-14): sin cuota de build gratis.** El plan free de
+EAS ya usó sus builds Android del mes — se resetea el **1° de octubre
+2026**. `eas build --local` no es alternativa: EAS Build local para Android
+requiere Mac/Linux, esta compu es Windows. Nacho decidió esperar al reset
+en vez de pagar el plan Starter. **Al retomar el 1/10 o después:** correr
+`npx eas-cli build --profile preview --platform android --non-interactive`
+desde `app/`, esperar el link, y actualizar `APK_ACTUAL.md`. Nota de
+comando: `eas` no está en el PATH (ni bash ni PowerShell) — usar siempre
+`npx eas-cli`, no `eas` a secas.
