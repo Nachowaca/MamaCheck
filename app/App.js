@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { AuthProvider, useAuth } from "./src/lib/AuthContext";
 import { registerForPushToken } from "./src/lib/pushNotifications";
+import { stopBackgroundLocation } from "./src/lib/locationTask";
 import { C } from "./src/theme/colors";
 import LoginGate from "./src/screens/LoginGate";
 import MamaHome from "./src/screens/MamaHome";
@@ -15,6 +16,12 @@ function Root() {
   useEffect(() => {
     if (profile?.role) {
       registerForPushToken().catch((e) => console.warn("push token:", e?.message ?? e));
+    }
+    // Solo mamá debe reportar ubicación en background. Si el rol activo es
+    // otro (ej. quedó corriendo de una prueba anterior con este mismo
+    // celu como mamá), la para acá — se auto-corrige solo al abrir la app.
+    if (profile?.role && profile.role !== "mama") {
+      stopBackgroundLocation().catch((e) => console.warn("stop background location:", e?.message ?? e));
     }
   }, [profile?.role]);
 

@@ -427,3 +427,31 @@ pedirle a Nacho que reproduzca la caída con el dev build + Metro
 corriendo, y leer los picos reales en la salida de Metro (queda visible
 en la terminal de Claude Code, no hace falta nada especial del lado del
 celu) antes de mover los números a ciegas.
+
+## ✅ Sesión 2026-09-14 — bug: aviso de "salió de zona" llegaba a Nacho, no a mamá
+
+**App instalada y funcionando bien en el celu real de mamá.** Reportado por
+Nacho: cuando ÉL sale de su propia casa, le aparece a él un aviso de "salió
+de la zona segura" — debería ser sobre su madre, no sobre él.
+
+**Causa raíz:** `startBackgroundLocation()` (`src/lib/locationTask.js`) se
+llama solo desde `MamaHome.js` — pero nunca había un `stopBackgroundLocation()`
+en ningún lado. Esa tarea de ubicación en background queda registrada a
+nivel del sistema operativo, atada a la instalación de la app, no a la
+sesión. En algún momento anterior Nacho debe haber probado la pantalla de
+mamá en su propio celu (mismo patrón de siempre: prueba todo en su propio
+teléfono) — eso arrancó la tarea, y al volver a su rol real de cuidador la
+tarea siguió corriendo, ahora reportando SU ubicación real y generando
+alertas de zona atribuidas a su propio usuario.
+
+**Fix aplicado** (`App.js`, `AuthContext.js`): la tarea de background ahora
+se para sola si el rol activo no es "mama" (auto-corrección la próxima vez
+que Nacho abra la app — no requiere que él haga nada manual) y también se
+para explícitamente al cerrar sesión (`signOut`).
+
+**Pendiente:** este es un cambio JS-only, pero como el build instalado es
+"preview" (JS embebido), no toma efecto solo — **hace falta un preview build
+nuevo** para que se auto-corrija en el celu real de Nacho. Se puede sumar al
+mismo build pendiente del fix de calibración de caída (`06cae03`) — no
+generar dos builds separados, juntar todo en el próximo `eas build --profile
+preview`.

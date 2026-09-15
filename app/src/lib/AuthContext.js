@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import * as Linking from "expo-linking";
 import { supabase, supabaseReady } from "./supabase";
+import { stopBackgroundLocation } from "./locationTask";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -144,6 +145,7 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
+    await stopBackgroundLocation().catch(() => {});
     if (supabaseReady) await supabase.auth.signOut();
     setSession(null);
     setProfile(null);
